@@ -99,17 +99,26 @@ features, and `markdown-it` has all of them as maintained plugins.
 | `web/src/editor/` | CodeMirror setup, theme, commands, paste handling |
 | `web/styles/` | design tokens, document theme, editor theme, shell |
 | `Sources/MDApp/` | the app: models, services, bridge, views |
+| `docs/DESIGN-claude.md` | the design spec the tokens come from |
 
-Render options are declared in **two** places — `web/src/render/options.js` and
-`RenderOptions` in `Sources/MDApp/Services/Preferences.swift` — because they are
-serialised into each other. `Tools/check-options-parity.mjs` runs during
-`build.sh` and fails the build if they drift.
+Two things are declared in more than one place and so are guarded by build-time
+checks:
+
+| Duplicated | Guard |
+|---|---|
+| Render options — `web/src/render/options.js` and `RenderOptions` in `Preferences.swift`, which are serialised into each other | `Tools/check-options-parity.mjs` — 32 keys |
+| Design tokens — `docs/DESIGN-claude.md`, `web/styles/tokens.css` and `Design/Tokens.swift` | `Tools/check-design-tokens.mjs` — 75 values |
+
+Both run inside `build.sh` and fail the build on drift.
 
 ## Design
 
-Tokens were transcribed from a Claude design-system spec (`DESIGN-claude.md`,
-not redistributed here) and live in `web/styles/tokens.css`, mirrored for native
-chrome in `Sources/MDApp/Design/Tokens.swift`.
+The design spec lives at [`docs/DESIGN-claude.md`](docs/DESIGN-claude.md) and is
+the source of truth. Its tokens are transcribed into `web/styles/tokens.css` for
+the document and mirrored in `Sources/MDApp/Design/Tokens.swift` for native
+chrome. `Tools/check-design-tokens.mjs` runs during `build.sh` and fails the
+build if any colour, radius or spacing value drifts from the spec — 75 checks
+across both files.
 
 A few decisions worth knowing about:
 

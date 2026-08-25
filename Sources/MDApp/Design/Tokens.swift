@@ -29,7 +29,7 @@ enum Tok {
     static let body       = Color(hex: 0x3D3D3A)
     static let muted      = Color(hex: 0x6C6A64)
     static let mutedSoft  = Color(hex: 0x8E8B82)
-    static let onPrimary  = Color.white
+    static let onPrimary  = Color(hex: 0xFFFFFF)
     static let onDark     = Color(hex: 0xFAF9F5)
     static let onDarkSoft = Color(hex: 0xA09D96)
 

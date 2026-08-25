@@ -44,6 +44,7 @@
   --r-lg:   12px;
   --r-xl:   16px;
   --r-pill: 9999px;
+  --r-full: 9999px;   /* spec keeps pill and full distinct; same value today */
 
   /* --- Spacing (base unit 4px) ------------------------------------------- */
   --s-xxs:  4px;
