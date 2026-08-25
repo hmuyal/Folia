@@ -1,0 +1,97 @@
+/* =============================================================================
+   app.css — the shell inside the WebView: split panes, divider, scrollbars.
+   Native chrome (tabs, sidebar, status bar) is AppKit and lives in Swift.
+   ============================================================================= */
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--doc-bg);
+  color: var(--doc-text);
+  font-family: var(--font-body);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#app, #harness { height: 100vh; }
+
+.app {
+  display: flex;
+  align-items: stretch;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.pane {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  height: 100%;
+}
+
+.pane--editor  { background: var(--ed-bg); }
+.pane--preview { background: var(--doc-bg); overflow-y: auto; overflow-x: hidden; }
+
+/* Text is selectable inside the panes even though the shell is not. */
+.pane--preview .md-doc,
+.pane--editor .cm-editor { -webkit-user-select: text; user-select: text; }
+
+.editor-host, .cm-editor { height: 100%; }
+
+/* --- View modes ----------------------------------------------------------- */
+.app[data-view="reader"] .pane--editor,
+.app[data-view="reader"] .splitter { display: none; }
+.app[data-view="reader"] .pane--preview { flex: 1 1 auto; }
+
+.app[data-view="source"] .pane--preview,
+.app[data-view="source"] .splitter { display: none; }
+.app[data-view="source"] .pane--editor { flex: 1 1 auto; }
+
+/* --- Divider -------------------------------------------------------------- */
+.splitter {
+  flex: 0 0 1px;
+  position: relative;
+  background: var(--ed-divider);
+  cursor: col-resize;
+}
+/* A 1px target is unhittable, so widen the hit area without widening the line. */
+.splitter::after {
+  content: "";
+  position: absolute;
+  inset: 0 -4px;
+}
+.splitter:hover, .splitter:focus-visible { background: var(--primary); outline: none; }
+body.is-dragging { cursor: col-resize; }
+body.is-dragging * { pointer-events: none; user-select: none; }
+body.is-dragging .splitter { background: var(--primary); pointer-events: auto; }
+
+/* --- Scrollbars ----------------------------------------------------------- */
+.pane--preview::-webkit-scrollbar,
+.cm-scroller::-webkit-scrollbar { width: 11px; height: 11px; }
+.pane--preview::-webkit-scrollbar-track,
+.cm-scroller::-webkit-scrollbar-track { background: transparent; }
+.pane--preview::-webkit-scrollbar-thumb,
+.cm-scroller::-webkit-scrollbar-thumb {
+  background: var(--doc-rule);
+  border-radius: 6px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+.pane--preview::-webkit-scrollbar-thumb:hover,
+.cm-scroller::-webkit-scrollbar-thumb:hover { background-clip: content-box; background-color: var(--muted-soft); }
+.code-window__body::-webkit-scrollbar { height: 9px; }
+.code-window__body::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.16); border-radius: 5px;
+  border: 2px solid transparent; background-clip: content-box;
+}
+
+/* --- Focus mode ----------------------------------------------------------- */
+/* Dims everything except the paragraph under the caret. */
+.app[data-focus="1"] .cm-line { opacity: 0.32; transition: opacity 140ms ease; }
+.app[data-focus="1"] .cm-line.cm-activeLine { opacity: 1; }
+
+/* --- Preview inner padding ------------------------------------------------ */
+/* The preview pane scrolls; .md-doc supplies its own grid gutters. */
+.pane--preview .md-doc { min-height: 100%; }

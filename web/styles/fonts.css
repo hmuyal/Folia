@@ -1,0 +1,68 @@
+/* =============================================================================
+   fonts.css — bundled woff2, no network. All SIL Open Font License.
+   EB Garamond    : substitute for Copernicus  (named in DESIGN-claude.md)
+   Inter          : substitute for StyreneB    (named in DESIGN-claude.md)
+   JetBrains Mono : code, per the spec
+   ============================================================================= */
+
+/* --- EB Garamond — display ---------------------------------------------- */
+@font-face {
+  font-family: "EB Garamond"; font-style: normal; font-weight: 400;
+  font-display: block; src: url("fonts/eb-garamond-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "EB Garamond"; font-style: italic; font-weight: 400;
+  font-display: block; src: url("fonts/eb-garamond-latin-400-italic.woff2") format("woff2");
+}
+@font-face {
+  font-family: "EB Garamond"; font-style: normal; font-weight: 500;
+  font-display: block; src: url("fonts/eb-garamond-latin-500-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "EB Garamond"; font-style: italic; font-weight: 500;
+  font-display: block; src: url("fonts/eb-garamond-latin-500-italic.woff2") format("woff2");
+}
+
+/* --- Inter — body & UI --------------------------------------------------- */
+@font-face {
+  font-family: "Inter"; font-style: normal; font-weight: 400;
+  font-display: block; src: url("fonts/inter-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter"; font-style: italic; font-weight: 400;
+  font-display: block; src: url("fonts/inter-latin-400-italic.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter"; font-style: normal; font-weight: 500;
+  font-display: block; src: url("fonts/inter-latin-500-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter"; font-style: italic; font-weight: 500;
+  font-display: block; src: url("fonts/inter-latin-500-italic.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter"; font-style: normal; font-weight: 600;
+  font-display: block; src: url("fonts/inter-latin-600-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter"; font-style: italic; font-weight: 600;
+  font-display: block; src: url("fonts/inter-latin-600-italic.woff2") format("woff2");
+}
+
+/* --- JetBrains Mono — code ----------------------------------------------- */
+@font-face {
+  font-family: "JetBrains Mono"; font-style: normal; font-weight: 400;
+  font-display: block; src: url("fonts/jetbrains-mono-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "JetBrains Mono"; font-style: italic; font-weight: 400;
+  font-display: block; src: url("fonts/jetbrains-mono-latin-400-italic.woff2") format("woff2");
+}
+@font-face {
+  font-family: "JetBrains Mono"; font-style: normal; font-weight: 500;
+  font-display: block; src: url("fonts/jetbrains-mono-latin-500-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "JetBrains Mono"; font-style: normal; font-weight: 700;
+  font-display: block; src: url("fonts/jetbrains-mono-latin-700-normal.woff2") format("woff2");
+}

@@ -1,0 +1,692 @@
+/* =============================================================================
+   preview.css — the Claude design system applied to a Markdown document.
+   Layout uses a named-line grid so prose holds the 760px measure while
+   tables / code / diagrams break out to 1100px.
+   ============================================================================= */
+
+.md-doc {
+  --gutter: 40px;
+
+  /* Prose is centred at --measure; blocks that genuinely need more room get
+     --measure-wide. This was a named-line grid at first, but grid
+     auto-placement put "wide" and "main" items in shared rows (they start on
+     different column lines), so they overlapped — and a stretched scroll
+     container collapsed to zero height. Centred blocks do the same job with
+     none of that. */
+  padding: 56px var(--gutter) 200px;
+
+  font-family: var(--font-body);
+  font-size: var(--doc-font-size);
+  font-weight: 400;
+  line-height: var(--doc-line-height);
+  color: var(--doc-text);
+  background: var(--doc-bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.md-doc > * {
+  max-width: var(--measure);
+  margin-inline: auto;
+  min-width: 0;
+}
+.md-doc > .breakout   { max-width: var(--measure-wide); }
+.md-doc > .full-bleed { max-width: none; }
+
+.md-doc ::selection { background: var(--selection); }
+
+/* =============================================================================
+   Flow spacing.
+   A zero-specificity reset clears UA margins, then each block declares the
+   space that goes BEFORE it via --flow. Using a custom property instead of
+   `margin-top` means component rules can never out-specify the rhythm.
+   ============================================================================= */
+:where(.md-doc) :where(p, ul, ol, dl, dd, dt, pre, figure, blockquote, table,
+                       h1, h2, h3, h4, h5, h6, hr, details) { margin: 0; }
+
+.md-doc > * + * { margin-top: var(--flow, 20px); }
+
+.md-doc > h1 { --flow: 44px; }
+.md-doc > h2 { --flow: 52px; }
+.md-doc > h3 { --flow: 36px; }
+.md-doc > h4 { --flow: 30px; }
+.md-doc > h5,
+.md-doc > h6 { --flow: 26px; }
+.md-doc > hr { --flow: 36px; }
+.md-doc > .code-window,
+.md-doc > .table-wrap,
+.md-doc > .mermaid-block,
+.md-doc > figure,
+.md-doc > .katex-display,
+.md-doc > blockquote,
+.md-doc > .admonition { --flow: 24px; }
+.md-doc > .footnotes  { --flow: 48px; }
+
+/* A block that directly follows its heading sits closer to it. */
+.md-doc > :is(h1, h2, h3, h4, h5, h6) + * { margin-top: 14px; }
+/* Consecutive callouts read as a stack, not as separate sections. */
+.md-doc > .admonition + .admonition { margin-top: 12px; }
+
+/* Nested flow: inside quotes, callouts, list items and table cells. */
+.md-doc blockquote > * + *,
+.md-doc .admonition__body > * + *,
+.md-doc li > * + *,
+.md-doc td > * + * { margin-top: 12px; }
+
+/* =============================================================================
+   Headings — Copernicus/EB Garamond serif for h1-h3, Inter for h4-h6.
+   The serif→sans split is the spec's own; weight stays 400 on display sizes.
+   ============================================================================= */
+.md-doc h1, .md-doc h2, .md-doc h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  color: var(--doc-heading);
+  line-height: 1.15;
+}
+.md-doc h4, .md-doc h5, .md-doc h6 {
+  font-family: var(--font-body);
+  color: var(--doc-heading);
+  line-height: 1.4;
+}
+
+.md-doc > h1 { font-size: 40px; letter-spacing: -1px;   line-height: 1.08; }
+.md-doc > h2 { font-size: 32px; letter-spacing: -0.6px; }
+.md-doc > h3 { font-size: 25px; letter-spacing: -0.35px; }
+.md-doc > h4 { font-size: 20px; font-weight: 500; }
+.md-doc > h5 { font-size: 17px; font-weight: 500; }
+.md-doc > h6 {
+  font-size: 12px; font-weight: 500; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--doc-muted);
+}
+.md-doc > h1:first-child { --flow: 0; }
+
+/* h2 gets a hairline above it — the section rhythm, scaled from 96px to 48px */
+.md-doc > h2::before {
+  content: "";
+  display: block;
+  height: 1px;
+  background: var(--doc-rule-soft);
+  margin-bottom: var(--s-lg);
+}
+.md-doc > h2:first-child::before { display: none; }
+
+/* --- Heading anchors ------------------------------------------------------ */
+.md-doc .heading-anchor {
+  float: left;
+  margin-left: -1.1em;
+  padding-right: 0.35em;
+  color: var(--doc-muted-soft);
+  opacity: 0;
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-size: 0.62em;
+  line-height: inherit;
+  transition: opacity 90ms ease;
+}
+.md-doc h1:hover .heading-anchor,
+.md-doc h2:hover .heading-anchor,
+.md-doc h3:hover .heading-anchor,
+.md-doc h4:hover .heading-anchor,
+.md-doc h5:hover .heading-anchor,
+.md-doc h6:hover .heading-anchor { opacity: 1; }
+.md-doc .heading-anchor:hover { color: var(--doc-link); }
+
+/* =============================================================================
+   Text
+   ============================================================================= */
+.md-doc strong { font-weight: 600; color: var(--doc-text-strong); }
+.md-doc em     { font-style: italic; }
+.md-doc small  { font-size: 0.875em; color: var(--doc-muted); }
+
+.md-doc a {
+  color: var(--doc-link);
+  text-decoration: underline;
+  text-decoration-color: var(--doc-link-underline);
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+}
+.md-doc a:hover {
+  color: var(--doc-link-hover);
+  text-decoration-color: currentColor;
+}
+
+/* ==highlight== */
+.md-doc mark {
+  background: rgba(232, 165, 90, 0.32);
+  color: var(--doc-text-strong);
+  padding: 0.1em 0.25em;
+  border-radius: var(--r-xs);
+}
+:root[data-theme="dark"] .md-doc mark { background: rgba(232, 165, 90, 0.26); color: var(--on-dark); }
+
+/* ~sub~ ^sup^ */
+.md-doc sub, .md-doc sup { font-size: 0.72em; line-height: 0; }
+
+/* ++ins++ and ~~del~~ */
+.md-doc ins { text-decoration: none; border-bottom: 2px solid var(--success); }
+.md-doc del { color: var(--doc-muted); text-decoration-thickness: 1px; }
+
+/* abbreviations */
+.md-doc abbr[title] {
+  text-decoration: underline dotted var(--doc-muted-soft);
+  text-underline-offset: 3px;
+  cursor: help;
+}
+
+/* keyboard */
+.md-doc kbd {
+  font-family: var(--font-mono);
+  font-size: 0.82em;
+  background: var(--doc-card);
+  border: 1px solid var(--doc-rule);
+  border-bottom-width: 2px;
+  border-radius: var(--r-sm);
+  padding: 0.1em 0.42em;
+  color: var(--doc-text-strong);
+}
+
+/* =============================================================================
+   Lists
+   ============================================================================= */
+.md-doc ul, .md-doc ol { padding-left: 1.5em; }
+.md-doc li { margin-top: 6px; }
+.md-doc li > ul, .md-doc li > ol { margin-top: 6px; }
+.md-doc li::marker { color: var(--doc-muted-soft); }
+.md-doc ul > li::marker { font-size: 0.9em; }
+
+/* Task lists */
+.md-doc .task-list-item { list-style: none; margin-left: -1.5em; padding-left: 1.5em; position: relative; }
+.md-doc .task-list-item-checkbox {
+  appearance: none;
+  position: absolute;
+  left: 0;
+  top: 0.28em;
+  width: 15px; height: 15px;
+  border: 1.5px solid var(--doc-muted-soft);
+  border-radius: var(--r-xs);
+  background: transparent;
+  cursor: default;
+}
+.md-doc .task-list-item-checkbox:checked {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+.md-doc .task-list-item-checkbox:checked::after {
+  content: "";
+  position: absolute;
+  left: 4.4px; top: 1.2px;
+  width: 4px; height: 8px;
+  border: solid var(--on-primary);
+  border-width: 0 2px 2px 0;
+  transform: rotate(43deg);
+}
+.md-doc .task-list-item-checkbox:checked + * { color: var(--doc-muted); }
+
+/* Definition lists */
+.md-doc dt {
+  font-weight: 500;
+  color: var(--doc-text-strong);
+  margin-top: var(--s-sm);
+}
+.md-doc dd {
+  margin: 4px 0 0 0;
+  padding-left: var(--s-md);
+  border-left: 2px solid var(--doc-rule);
+  color: var(--doc-text);
+}
+
+/* =============================================================================
+   Blockquote — surface-soft card, hairline rule. Coral is reserved for
+   admonitions so it stays scarce, per the spec.
+   ============================================================================= */
+.md-doc blockquote {
+  padding: var(--s-md) var(--s-lg);
+  background: var(--doc-soft);
+  border-left: 2px solid var(--doc-rule);
+  border-radius: 0 var(--r-lg) var(--r-lg) 0;
+  color: var(--doc-text-strong);
+}
+
+/* =============================================================================
+   Admonitions — GitHub alerts (> [!NOTE]) and ::: containers
+   ============================================================================= */
+.md-doc .admonition {
+  --adm: var(--doc-muted);
+  --adm-bg: var(--doc-soft);
+  padding: var(--s-md) var(--s-lg);
+  background: var(--adm-bg);
+  border-left: 3px solid var(--adm);
+  border-radius: 0 var(--r-lg) var(--r-lg) 0;
+}
+.md-doc .admonition__title {
+  display: flex;
+  align-items: center;
+  gap: var(--s-xs);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--adm);
+  margin-bottom: 6px;
+}
+.md-doc .admonition__title svg { width: 15px; height: 15px; flex: none; fill: currentColor; }
+
+.md-doc .admonition--note      { --adm: #5a7d9a; --adm-bg: rgba(90, 125, 154, 0.09); }
+.md-doc .admonition--tip       { --adm: #3f9e8b; --adm-bg: rgba(93, 184, 166, 0.11); }
+.md-doc .admonition--important { --adm: var(--primary-active); --adm-bg: rgba(204, 120, 92, 0.11); }
+.md-doc .admonition--warning   { --adm: #a8781a; --adm-bg: rgba(232, 165, 90, 0.14); }
+.md-doc .admonition--caution   { --adm: var(--error);  --adm-bg: rgba(198, 69, 69, 0.09); }
+
+:root[data-theme="dark"] .md-doc .admonition--note      { --adm: #85aac9; }
+:root[data-theme="dark"] .md-doc .admonition--tip       { --adm: #6fc4b1; }
+:root[data-theme="dark"] .md-doc .admonition--important { --adm: #d98a6d; }
+:root[data-theme="dark"] .md-doc .admonition--warning   { --adm: #e0b365; }
+:root[data-theme="dark"] .md-doc .admonition--caution   { --adm: #dd7b7b; }
+
+/* =============================================================================
+   Inline code
+   ============================================================================= */
+.md-doc :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--doc-inline-code-bg);
+  color: var(--doc-inline-code-text);
+  padding: 0.13em 0.36em;
+  border-radius: var(--r-sm);
+  white-space: break-spaces;
+}
+.md-doc a code { color: inherit; }
+
+/* =============================================================================
+   Code block — the `code-window-card`. Dark in BOTH themes: this is the
+   signature element of the system.
+   ============================================================================= */
+.md-doc .code-window {
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.md-doc .code-window__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-md);
+  padding: 9px 14px 9px 18px;
+  background: var(--code-chrome);
+  border-bottom: 1px solid var(--code-border);
+}
+.md-doc .code-window__lang {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--code-label);
+}
+.md-doc .code-window__copy {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--code-label);
+  background: transparent;
+  border: 1px solid var(--code-border);
+  border-radius: var(--r-sm);
+  padding: 3px 10px;
+  cursor: pointer;
+  transition: color 90ms ease, border-color 90ms ease;
+}
+.md-doc .code-window__copy:hover { color: var(--on-dark); border-color: rgba(255,255,255,0.22); }
+.md-doc .code-window__copy[data-copied="1"] { color: var(--accent-teal); border-color: rgba(93,184,166,0.4); }
+
+.md-doc .code-window__body {
+  background: var(--code-inner);
+  overflow-x: auto;
+  padding: var(--s-md) 0;
+}
+.md-doc .code-window pre {
+  padding: 0;
+  background: none;
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--code-text);
+  tab-size: 4;
+}
+.md-doc .code-window code { font-family: inherit; background: none; padding: 0; }
+
+/* One .cl span per line -> stable gutter numbering that survives wrapping off */
+.md-doc .code-window .cl {
+  display: block;
+  padding: 0 18px 0 0;
+  counter-increment: cw-line;
+}
+.md-doc .code-window[data-numbers="1"] pre { counter-reset: cw-line; }
+.md-doc .code-window[data-numbers="1"] .cl { padding-left: 58px; position: relative; }
+.md-doc .code-window[data-numbers="1"] .cl::before {
+  content: counter(cw-line);
+  position: absolute;
+  left: 0; width: 40px;
+  text-align: right;
+  color: var(--code-gutter);
+  font-variant-numeric: tabular-nums;
+  user-select: none;
+}
+.md-doc .code-window:not([data-numbers="1"]) .cl { padding-left: 18px; }
+.md-doc .code-window[data-wrap="1"] .cl { white-space: pre-wrap; word-break: break-word; }
+
+/* Plain <pre> that never became a code-window (e.g. indented blocks) */
+.md-doc > pre {
+  background: var(--code-inner);
+  border: 1px solid var(--code-border);
+  border-radius: var(--r-lg);
+  padding: var(--s-md) var(--s-lg);
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--code-text);
+}
+
+/* --- highlight.js token colours ------------------------------------------ */
+.md-doc .hljs-comment, .md-doc .hljs-quote { color: var(--syn-comment); font-style: italic; }
+.md-doc .hljs-keyword, .md-doc .hljs-selector-tag, .md-doc .hljs-literal,
+.md-doc .hljs-doctag, .md-doc .hljs-name, .md-doc .hljs-tag { color: var(--syn-keyword); }
+.md-doc .hljs-string, .md-doc .hljs-regexp, .md-doc .hljs-addition,
+.md-doc .hljs-char.escape_ { color: var(--syn-string); }
+.md-doc .hljs-number, .md-doc .hljs-symbol, .md-doc .hljs-bullet { color: var(--syn-number); }
+.md-doc .hljs-title, .md-doc .hljs-title.function_, .md-doc .hljs-section { color: var(--syn-function); }
+.md-doc .hljs-title.class_, .md-doc .hljs-type, .md-doc .hljs-built_in,
+.md-doc .hljs-class .hljs-title { color: var(--syn-type); }
+.md-doc .hljs-attr, .md-doc .hljs-attribute, .md-doc .hljs-variable,
+.md-doc .hljs-template-variable, .md-doc .hljs-property { color: var(--syn-variable); }
+.md-doc .hljs-meta, .md-doc .hljs-meta .hljs-keyword { color: var(--syn-meta); }
+.md-doc .hljs-punctuation, .md-doc .hljs-operator { color: var(--syn-punct); }
+.md-doc .hljs-deletion { color: var(--syn-deleted); }
+.md-doc .hljs-emphasis { font-style: italic; }
+.md-doc .hljs-strong { font-weight: 700; }
+.md-doc .hljs-link { text-decoration: underline; }
+
+/* =============================================================================
+   Tables — hairline grid, cream header, clipped corners, scroll not wrap
+   ============================================================================= */
+.md-doc .table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--doc-rule);
+  border-radius: var(--r-lg);
+  background: var(--doc-bg);
+}
+.md-doc table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+.md-doc thead { background: var(--doc-card); }
+.md-doc th {
+  font-family: var(--font-body);
+  font-weight: 500;
+  color: var(--doc-heading);
+  text-align: left;
+  padding: 10px var(--s-md);
+  white-space: nowrap;
+  border-bottom: 1px solid var(--doc-rule);
+}
+.md-doc td {
+  padding: 10px var(--s-md);
+  border-bottom: 1px solid var(--doc-rule-soft);
+  color: var(--doc-text);
+  vertical-align: top;
+}
+.md-doc tbody tr:last-child td { border-bottom: none; }
+.md-doc th[align="center"], .md-doc td[align="center"] { text-align: center; }
+.md-doc th[align="right"],  .md-doc td[align="right"]  { text-align: right; }
+
+/* =============================================================================
+   Horizontal rule — the Anthropic 4-spoke spike-mark, which the spec names
+   as a content marker
+   ============================================================================= */
+.md-doc hr {
+  border: none;
+  height: 22px;
+  background-color: var(--doc-muted-soft);
+  -webkit-mask-image: var(--spike-mark);
+  mask-image: var(--spike-mark);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: 15px 15px;
+  mask-size: 15px 15px;
+  opacity: 0.75;
+}
+:root {
+  --spike-mark: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 0c.85 7.2 1.4 9.9 12 12-10.6 2.1-11.15 4.8-12 12-.85-7.2-1.4-9.9-12-12 10.6-2.1 11.15-4.8 12-12z"/></svg>');
+}
+
+/* =============================================================================
+   Images
+   ============================================================================= */
+.md-doc img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--r-lg);
+  display: block;
+}
+.md-doc figure img { margin-inline: auto; }
+.md-doc figcaption {
+  font-size: 13px;
+  color: var(--doc-muted-soft);
+  text-align: center;
+  margin-top: var(--s-xs);
+}
+.md-doc .md-image-error {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--doc-muted);
+  background: var(--doc-soft);
+  border: 1px dashed var(--doc-rule);
+  border-radius: var(--r-md);
+  padding: 6px 12px;
+  font-family: var(--font-mono);
+}
+
+/* =============================================================================
+   Front matter — rendered as a metadata card, per QLMarkdown
+   ============================================================================= */
+.md-doc .frontmatter {
+  background: var(--doc-soft);
+  border: 1px solid var(--doc-rule);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.md-doc .frontmatter > summary {
+  cursor: default;
+  list-style: none;
+  padding: 8px var(--s-md);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--doc-muted);
+  background: var(--doc-card);
+  user-select: none;
+}
+.md-doc .frontmatter > summary::-webkit-details-marker { display: none; }
+.md-doc .frontmatter > summary::before {
+  content: "▸ ";
+  display: inline-block;
+  transition: transform 120ms ease;
+}
+.md-doc .frontmatter[open] > summary::before { content: "▾ "; }
+.md-doc .frontmatter table { font-size: 13.5px; }
+.md-doc .frontmatter th {
+  width: 1%;
+  white-space: nowrap;
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--doc-muted);
+  vertical-align: top;
+  border-bottom: 1px solid var(--doc-rule-soft);
+}
+.md-doc .frontmatter td { border-bottom: 1px solid var(--doc-rule-soft); }
+.md-doc .frontmatter tr:last-child th,
+.md-doc .frontmatter tr:last-child td { border-bottom: none; }
+.md-doc .frontmatter pre {
+  padding: var(--s-md);
+  font-family: var(--font-mono); font-size: 12.5px;
+  color: var(--doc-text); white-space: pre-wrap;
+}
+
+/* =============================================================================
+   Footnotes
+   ============================================================================= */
+.md-doc .footnotes {
+  padding-top: var(--s-lg);
+  border-top: 1px solid var(--doc-rule);
+  font-size: 14px;
+  color: var(--doc-muted);
+}
+.md-doc .footnotes hr { display: none; }
+.md-doc .footnotes ol { padding-left: 1.3em; }
+.md-doc .footnotes li { margin-top: 4px; }
+.md-doc .footnotes li p { margin: 0; }
+.md-doc .footnote-ref a {
+  text-decoration: none;
+  font-size: 0.78em;
+  font-weight: 500;
+  padding: 0 1px;
+  vertical-align: super;
+}
+.md-doc .footnote-backref { text-decoration: none; margin-left: 4px; }
+.md-doc .footnotes li:target { background: var(--selection); border-radius: var(--r-sm); }
+
+/* =============================================================================
+   Math (KaTeX)
+   ============================================================================= */
+.md-doc .katex { font-size: 1.04em; color: var(--doc-text-strong); }
+.md-doc .katex-display {
+  padding: var(--s-xs) 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.md-doc .math-error {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  color: var(--error);
+  background: rgba(198, 69, 69, 0.09);
+  border-radius: var(--r-sm);
+  padding: 0.1em 0.35em;
+}
+
+/* =============================================================================
+   Mermaid
+   ============================================================================= */
+.md-doc .mermaid-block {
+  padding: var(--s-lg);
+  background: var(--doc-soft);
+  border: 1px solid var(--doc-rule);
+  border-radius: var(--r-lg);
+  text-align: center;
+  overflow-x: auto;
+}
+.md-doc .mermaid-block svg { max-width: 100%; height: auto; }
+.md-doc .mermaid-block[data-state="error"] {
+  text-align: left;
+  border-color: rgba(198, 69, 69, 0.4);
+  background: rgba(198, 69, 69, 0.06);
+}
+.md-doc .mermaid-block .mermaid-error {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--error);
+  white-space: pre-wrap;
+}
+
+/* =============================================================================
+   Raw-HTML safety notice + misc
+   ============================================================================= */
+.md-doc .raw-html-stripped {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--doc-muted-soft);
+  background: var(--doc-soft);
+  border: 1px dashed var(--doc-rule);
+  border-radius: var(--r-md);
+  padding: 6px 12px;
+}
+
+.md-doc .md-empty {
+  color: var(--doc-muted-soft);
+  font-style: italic;
+  text-align: center;
+  padding-top: 80px;
+}
+
+/* Scroll-sync target flash */
+.md-doc .sync-flash { animation: syncFlash 600ms ease-out; }
+@keyframes syncFlash {
+  from { background: var(--selection); }
+  to   { background: transparent; }
+}
+
+/* =============================================================================
+   Additions
+   ============================================================================= */
+
+/* Front-matter array values render as pills */
+.md-doc .fm-chip {
+  display: inline-block;
+  background: var(--doc-card);
+  border: 1px solid var(--doc-rule);
+  border-radius: var(--r-pill);
+  padding: 1px 9px;
+  margin: 1px 3px 1px 0;
+  font-size: 12px;
+  color: var(--doc-text-strong);
+}
+.md-doc .frontmatter > summary::before { content: "▸"; margin-right: 7px; }
+.md-doc .frontmatter[open] > summary::before { content: "▾"; }
+.md-doc .fm-error {
+  padding: var(--s-sm) var(--s-md);
+  font-size: 13px;
+  color: var(--error);
+  border-bottom: 1px solid var(--doc-rule-soft);
+}
+
+/* Long words and URLs must never widen the column */
+.md-doc p, .md-doc li, .md-doc td, .md-doc dd { overflow-wrap: break-word; }
+
+/* Blocked remote/missing assets */
+.md-doc img[src^="mdapp://blocked"],
+.md-doc img[src=""] { display: none; }
+
+/* Print: flatten the grid, keep code legible, avoid orphaned headings */
+@media print {
+  .md-doc {
+    display: block;
+    max-width: none;
+    padding: 0;
+    font-size: 11pt;
+    color: #000;
+    background: #fff;
+  }
+  .md-doc > * { max-width: 100%; }
+  .md-doc .code-window,
+  .md-doc .table-wrap,
+  .md-doc .mermaid-block,
+  .md-doc blockquote,
+  .md-doc .admonition { break-inside: avoid; }
+  .md-doc h1, .md-doc h2, .md-doc h3 { break-after: avoid; }
+  .md-doc .code-window__copy,
+  .md-doc .heading-anchor { display: none; }
+  .md-doc a { text-decoration: none; }
+}

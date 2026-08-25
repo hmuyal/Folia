@@ -1,0 +1,14 @@
+*.icns
+.DS_Store
+.build/
+.claude/
+MDApp.app/
+Sources/MDApp/Resources/Fonts/
+Sources/MDApp/Resources/web/
+build/
+dist/
+web/assets/
+web/dist/
+web/fonts/
+web/katex-fonts/
+web/node_modules/

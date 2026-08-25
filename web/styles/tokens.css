@@ -1,0 +1,214 @@
+/* =============================================================================
+   tokens.css — Claude design system, transcribed from DESIGN-claude.md
+   Every value here is verbatim from that spec unless marked DERIVED.
+   ============================================================================= */
+
+:root {
+  /* --- Brand & accent ---------------------------------------------------- */
+  --primary:               #cc785c;
+  --primary-active:        #a9583e;
+  --primary-disabled:      #e6dfd8;
+  --accent-teal:           #5db8a6;
+  --accent-amber:          #e8a55a;
+
+  /* --- Surfaces ---------------------------------------------------------- */
+  --canvas:                #faf9f5;
+  --surface-soft:          #f5f0e8;
+  --surface-card:          #efe9de;
+  --surface-cream-strong:  #e8e0d2;
+  --surface-dark:          #181715;
+  --surface-dark-elevated: #252320;
+  --surface-dark-soft:     #1f1e1b;
+  --hairline:              #e6dfd8;
+  --hairline-soft:         #ebe6df;
+
+  /* --- Text -------------------------------------------------------------- */
+  --ink:                   #141413;
+  --body-strong:           #252523;
+  --body:                  #3d3d3a;
+  --muted:                 #6c6a64;
+  --muted-soft:            #8e8b82;
+  --on-primary:            #ffffff;
+  --on-dark:               #faf9f5;
+  --on-dark-soft:          #a09d96;
+
+  /* --- Semantic ---------------------------------------------------------- */
+  --success:               #5db872;
+  --warning:               #d4a017;
+  --error:                 #c64545;
+
+  /* --- Radius ------------------------------------------------------------ */
+  --r-xs:   4px;
+  --r-sm:   6px;
+  --r-md:   8px;
+  --r-lg:   12px;
+  --r-xl:   16px;
+  --r-pill: 9999px;
+
+  /* --- Spacing (base unit 4px) ------------------------------------------- */
+  --s-xxs:  4px;
+  --s-xs:   8px;
+  --s-sm:   12px;
+  --s-md:   16px;
+  --s-lg:   24px;
+  --s-xl:   32px;
+  --s-xxl:  48px;
+  --s-section: 96px;
+
+  /* --- Type families ----------------------------------------------------- */
+  /* Copernicus and StyreneB are licensed Anthropic faces. DESIGN-claude.md
+     names EB Garamond / Cormorant Garamond and Inter as the open substitutes. */
+  --font-display: "EB Garamond", "Tiempos Headline", Palatino, Georgia, serif;
+  --font-body:    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* --- DERIVED: document semantics --------------------------------------- *
+   * The spec describes a marketing surface. These re-pitch it for a reader.  */
+  --doc-bg:            var(--canvas);
+  --doc-text:          var(--body);
+  --doc-text-strong:   var(--body-strong);
+  --doc-heading:       var(--ink);
+  --doc-muted:         var(--muted);
+  --doc-muted-soft:    var(--muted-soft);
+  --doc-rule:          var(--hairline);
+  --doc-rule-soft:     var(--hairline-soft);
+  --doc-card:          var(--surface-card);
+  --doc-soft:          var(--surface-soft);
+
+  /* Links use primary-active, not primary: #cc785c on #faf9f5 measures
+     3.11:1 and fails WCAG AA for body text. #a9583e measures 4.80:1. */
+  --doc-link:          var(--primary-active);
+  --doc-link-hover:    var(--primary);
+  --doc-link-underline: rgba(169, 88, 62, 0.35);
+
+  --doc-inline-code-bg:   var(--surface-card);
+  --doc-inline-code-text: var(--body-strong);
+
+  /* Code blocks stay dark in BOTH themes — the code-window-card is the
+     signature element of the system. */
+  --code-bg:      var(--surface-dark);
+  --code-inner:   var(--surface-dark-soft);
+  --code-chrome:  var(--surface-dark-elevated);
+  --code-border:  rgba(255, 255, 255, 0.06);
+  --code-text:    #e8e3d9;
+  --code-gutter:  #6a665e;
+  --code-label:   var(--on-dark-soft);
+
+  /* Reading measure. The spec's 1200px is a marketing container; prose needs
+     a ~72ch measure. Wide elements break out to --measure-wide. */
+  --measure:      760px;
+  --measure-wide: 1100px;
+
+  --doc-font-size: 16px;
+  --doc-line-height: 1.55;
+
+  --shadow-soft: 0 1px 3px rgba(20, 20, 19, 0.08);
+  --selection:   rgba(204, 120, 92, 0.22);
+}
+
+/* =============================================================================
+   Dark theme — built from the spec's own dark surfaces
+   ============================================================================= */
+:root[data-theme="dark"] {
+  --doc-bg:          var(--surface-dark);
+  --doc-text:        #d4d0c8;
+  --doc-text-strong: var(--on-dark);
+  --doc-heading:     var(--on-dark);
+  --doc-muted:       var(--on-dark-soft);
+  --doc-muted-soft:  #857f76;
+  --doc-rule:        rgba(255, 255, 255, 0.10);
+  --doc-rule-soft:   rgba(255, 255, 255, 0.06);
+  --doc-card:        var(--surface-dark-elevated);
+  --doc-soft:        #1c1b19;
+
+  /* Coral lifted for contrast against #181715 */
+  --doc-link:           #d98a6d;
+  --doc-link-hover:     #e8a184;
+  --doc-link-underline: rgba(217, 138, 109, 0.4);
+
+  --doc-inline-code-bg:   #2b2825;
+  --doc-inline-code-text: #e8e3d9;
+
+  /* Code needs a border in dark mode — it is nearly the canvas colour */
+  --code-bg:     var(--surface-dark-soft);
+  --code-inner:  #1a1917;
+  --code-chrome: #262421;
+  --code-border: rgba(255, 255, 255, 0.09);
+
+  --hairline:      rgba(255, 255, 255, 0.10);
+  --hairline-soft: rgba(255, 255, 255, 0.06);
+  --shadow-soft:   0 1px 3px rgba(0, 0, 0, 0.4);
+  --selection:     rgba(217, 138, 109, 0.28);
+}
+
+/* =============================================================================
+   Syntax palette — "muted blues / oranges / grays" per the spec.
+   Identical in both themes; code surfaces are always dark.
+   ============================================================================= */
+:root {
+  --syn-comment:  #7d7a71;
+  --syn-keyword:  #d98a6d;
+  --syn-string:   #8fc9b9;
+  --syn-number:   #e8a55a;
+  --syn-function: #8fb3d1;
+  --syn-type:     #e0c088;
+  --syn-variable: #c9c3b6;
+  --syn-punct:    #948f85;
+  --syn-meta:     #9a958a;
+  --syn-deleted:  #d98080;
+  --syn-inserted: #8fc99a;
+}
+
+/* =============================================================================
+   Editor surface.
+   The source pane is a quieter sibling of the document: same cream floor,
+   markdown punctuation dimmed so the prose reads cleanly through it.
+   ============================================================================= */
+:root {
+  --ed-bg:            var(--canvas);
+  --ed-text:          var(--body-strong);
+  --ed-gutter-bg:     transparent;
+  --ed-gutter-text:   #b3ada1;
+  --ed-gutter-active: var(--muted);
+  --ed-active-line:   rgba(204, 120, 92, 0.045);
+  --ed-selection:     rgba(204, 120, 92, 0.20);
+  --ed-cursor:        var(--primary-active);
+  --ed-marker:        #b3ada1;          /* #, *, `, > and other syntax marks  */
+  --ed-heading:       var(--ink);
+  --ed-link:          var(--primary-active);
+  --ed-url:           var(--muted);
+  --ed-code:          #8a6a52;
+  --ed-code-bg:       rgba(204, 120, 92, 0.08);
+  --ed-quote:         var(--muted);
+  --ed-list:          var(--primary);
+  --ed-emphasis:      var(--body-strong);
+  --ed-matching:      rgba(93, 184, 166, 0.28);
+  --ed-search:        rgba(232, 165, 90, 0.35);
+  --ed-search-active: rgba(204, 120, 92, 0.45);
+  --ed-panel-bg:      var(--surface-card);
+  --ed-divider:       var(--hairline);
+}
+
+:root[data-theme="dark"] {
+  --ed-bg:            var(--surface-dark);
+  --ed-text:          #d4d0c8;
+  --ed-gutter-text:   #56514a;
+  --ed-gutter-active: #8f8a80;
+  --ed-active-line:   rgba(217, 138, 109, 0.06);
+  --ed-selection:     rgba(217, 138, 109, 0.26);
+  --ed-cursor:        #d98a6d;
+  --ed-marker:        #56514a;
+  --ed-heading:       var(--on-dark);
+  --ed-link:          #d98a6d;
+  --ed-url:           #857f76;
+  --ed-code:          #d0a184;
+  --ed-code-bg:       rgba(217, 138, 109, 0.10);
+  --ed-quote:         #8f8a80;
+  --ed-list:          #d98a6d;
+  --ed-emphasis:      var(--on-dark);
+  --ed-matching:      rgba(93, 184, 166, 0.26);
+  --ed-search:        rgba(232, 165, 90, 0.28);
+  --ed-search-active: rgba(217, 138, 109, 0.40);
+  --ed-panel-bg:      var(--surface-dark-elevated);
+  --ed-divider:       rgba(255, 255, 255, 0.10);
+}
