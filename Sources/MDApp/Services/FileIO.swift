@@ -148,4 +148,17 @@ enum FileIO {
     static func isMarkdown(_ url: URL) -> Bool {
         markdownExtensions.contains(url.pathExtension.lowercased())
     }
+
+    /// Resolves `path` against `base`, or nil if the result would land outside
+    /// `base`. Documents are untrusted input — a relative link or image src
+    /// laden with `..` must not be able to walk out of the directory (or the
+    /// bundle, or the home folder) it's supposed to be confined to. The
+    /// trailing "/" avoids a bare-prefix false match against a sibling
+    /// directory that merely shares `base`'s name as a prefix.
+    static func contained(_ path: String, within base: URL) -> URL? {
+        let root = base.standardizedFileURL
+        let target = root.appendingPathComponent(path).standardizedFileURL
+        guard target.path == root.path || target.path.hasPrefix(root.path + "/") else { return nil }
+        return target
+    }
 }

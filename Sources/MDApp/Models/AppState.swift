@@ -104,7 +104,13 @@ final class AppState: ObservableObject {
     }
 
     func pushActiveDocument(force: Bool = false) {
-        guard let doc = store.active else { return }
+        guard let doc = store.active else {
+            // No document is active (e.g. the last tab was just closed) — forget
+            // what's on screen so the next document opened always gets pushed,
+            // even if it's the same one that was just showing.
+            pushedDocumentID = nil
+            return
+        }
         guard force || pushedDocumentID != doc.id else { return }
         pushedDocumentID = doc.id
         suppressPush = true
@@ -188,7 +194,13 @@ final class AppState: ObservableObject {
         guard let base = store.active?.baseDirectory else { return }
         let cleaned = href.components(separatedBy: "#").first ?? href
         let decoded = cleaned.removingPercentEncoding ?? cleaned
-        var target = base.appendingPathComponent(decoded).standardizedFileURL
+        // The document is untrusted input — a `..`-laden link must not be able
+        // to walk out of its folder and have us open (or launch) something
+        // elsewhere on disk.
+        guard var target = FileIO.contained(decoded, within: base) else {
+            statusMessage = "Not found: \(decoded)"
+            return
+        }
 
         // [[Wiki links]] and bare names get a .md extension if that resolves.
         if !FileManager.default.fileExists(atPath: target.path),
@@ -356,6 +368,16 @@ final class AppState: ObservableObject {
     }
 
     // MARK: Commands
+
+    /// Opens each URL as a folder (in the sidebar) or a document, whichever it is.
+    /// Shared by Finder/Dock opens and by dropping files onto the window.
+    func open(urls: [URL]) {
+        for url in urls {
+            var isDir: ObjCBool = false
+            FileManager.default.fileExists(atPath: url.path, isDirectory: &isDir)
+            if isDir.boolValue { openFolder(url) } else { store.open(url) }
+        }
+    }
 
     func openFolder(_ url: URL) {
         let std = url.standardizedFileURL

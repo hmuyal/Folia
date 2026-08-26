@@ -45,18 +45,14 @@ final class AppSchemeHandler: NSObject, WKURLSchemeHandler {
         switch host {
         case "asset":
             guard let assetRoot else { return nil }
-            let target = assetRoot.appendingPathComponent(path).standardizedFileURL
-            // Never let ../ walk out of the bundle.
-            guard target.path.hasPrefix(assetRoot.standardizedFileURL.path) else { return nil }
-            return target
+            return FileIO.contained(path, within: assetRoot)
         case "doc":
             guard let base = documentBaseDirectory else { return nil }
-            return base.appendingPathComponent(path).standardizedFileURL
+            return FileIO.contained(path, within: base)
         case "file":
             return URL(fileURLWithPath: "/" + path).standardizedFileURL
         case "home":
-            return FileManager.default.homeDirectoryForCurrentUser
-                .appendingPathComponent(path).standardizedFileURL
+            return FileIO.contained(path, within: FileManager.default.homeDirectoryForCurrentUser)
         default:
             return nil
         }
