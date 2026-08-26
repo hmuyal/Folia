@@ -59,11 +59,18 @@ BIN_PATH="$(swift build -c "$CONFIG" "${ARCHS[@]}" --product MDApp --show-bin-pa
 
 # ---------------------------------------------------------------- icon -----
 say "Rendering app icon"
-swift build -c release --arch arm64 --product IconGen >/dev/null 2>&1 || true
-ICON_BIN="$(swift build -c release --arch arm64 --product IconGen --show-bin-path 2>/dev/null)/IconGen"
+ICON_SRC="Sources/MDApp/Resources/AppIcon.png"
 ICONSET="build/MDApp.iconset"
 rm -rf "$ICONSET"; mkdir -p "$ICONSET"
-if [[ -x "$ICON_BIN" ]] && "$ICON_BIN" "$ICONSET" >/dev/null 2>&1; then
+if [[ -f "$ICON_SRC" ]]; then
+  # (pixel size, iconutil filename) pairs for a complete .iconset.
+  variants=(16:icon_16x16 32:icon_16x16@2x 32:icon_32x32 64:icon_32x32@2x
+            128:icon_128x128 256:icon_128x128@2x 256:icon_256x256
+            512:icon_256x256@2x 512:icon_512x512 1024:icon_512x512@2x)
+  for variant in "${variants[@]}"; do
+    px="${variant%%:*}"; name="${variant##*:}"
+    sips -z "$px" "$px" "$ICON_SRC" --out "$ICONSET/$name.png" >/dev/null 2>&1
+  done
   iconutil -c icns "$ICONSET" -o "build/MDApp.icns" 2>/dev/null || true
 fi
 

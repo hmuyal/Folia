@@ -11,14 +11,9 @@ let package = Package(
         .executableTarget(
             name: "MDApp",
             path: "Sources/MDApp",
-            // Info.plist is a build input for build.sh, not a bundled resource.
-            exclude: ["Resources/Info.plist"],
-            swiftSettings: [.swiftLanguageMode(.v5)]
-        ),
-        // Draws the app icon with CoreGraphics; build.sh pipes its output to iconutil.
-        .executableTarget(
-            name: "IconGen",
-            path: "Sources/IconGen",
+            // Info.plist and AppIcon.png are build inputs for build.sh, not bundled
+            // SwiftPM resources.
+            exclude: ["Resources/Info.plist", "Resources/AppIcon.png"],
             swiftSettings: [.swiftLanguageMode(.v5)]
         ),
     ]
