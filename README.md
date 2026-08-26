@@ -30,6 +30,8 @@ dragging a `.md` file onto its Dock icon all just work.
 Since it's built locally and not notarised, the first launch will get a
 Gatekeeper warning — right-click the app and choose **Open** once to clear it.
 
+![Folia's welcome screen](docs/screenshots/welcome.png)
+
 ## What it does
 
 **Reads** — CommonMark + GFM plus a broad set of popular extensions:
@@ -56,7 +58,7 @@ copy-as-rich-text that pastes correctly into Mail, Pages and Slack.
 app. A document renders completely with the network unplugged, and remote
 content is blocked unless you turn it on.
 
-![Browsing a folder in the sidebar](docs/screenshots/sidebar.png)
+![Jumping to any heading from the outline](docs/screenshots/outline.png)
 
 ## Keyboard shortcuts
 
