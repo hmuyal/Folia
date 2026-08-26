@@ -1,10 +1,34 @@
 # MDApp
 
-A Markdown reader and editor for macOS. Rendering aims at parity with
-[QLMarkdown](https://github.com/sbarex/QLMarkdown); the look and feel comes from
-the Claude design system.
+A fast, good-looking Markdown reader and editor for macOS — a native app, not
+a wrapper around a text field. Split-pane editing with a live preview, a
+folder sidebar for browsing a whole vault of notes, and export to HTML, PDF,
+TextBundle or rich text, all running completely offline.
 
-<!-- screenshot goes here -->
+Rendering aims at parity with [QLMarkdown](https://github.com/sbarex/QLMarkdown);
+the look and feel comes from the Claude design system.
+
+![MDApp's split editor and preview](docs/screenshots/editor-preview.png)
+
+## Get it running
+
+You need Xcode's Command Line Tools and Node — **not** full Xcode.
+
+```bash
+git clone https://github.com/hmuyal/MDApp.git
+cd MDApp
+./build.sh
+open MDApp.app
+```
+
+That's it. `build.sh` builds the web bundle, compiles the Swift app, generates
+the icon and signs it ad-hoc — it produces a working `MDApp.app` right there
+in the folder. Drag it into `/Applications` to keep it, and it'll register
+itself as a handler for Markdown files, so double-click, Open With and
+dragging a `.md` file onto its Dock icon all just work.
+
+Since it's built locally and not notarised, the first launch will get a
+Gatekeeper warning — right-click the app and choose **Open** once to clear it.
 
 ## What it does
 
@@ -31,22 +55,30 @@ copy-as-rich-text that pastes correctly into Mail, Pages and Slack.
 app. A document renders completely with the network unplugged, and remote
 content is blocked unless you turn it on.
 
+![Browsing a folder in the sidebar](docs/screenshots/sidebar.png)
+
+## Keyboard shortcuts
+
+| | |
+|---|---|
+| ⌘N / ⌘O / ⌘S / ⇧⌘S | New · Open · Save · Save As |
+| ⇧⌘O | Open folder in the sidebar |
+| ⌘W | Close tab |
+| ⇧⌘] / ⇧⌘[ | Next / previous tab |
+| ⌘B / ⌘I / ⌘K / ⌘E | Bold · Italic · Link · Inline code |
+| ⇧⌘X / ⇧⌘E | Strikethrough · Code block |
+| ⌘1–⌘6 / ⌘0 | Heading level · body text |
+| ⇧⌘L / ⌥⌘L / ⇧⌘' | Bulleted · numbered list · blockquote |
+| ⌘F / ⌥⌘F | Find · find and replace |
+| ⇧⌘P / ⇧⌘F | Quick open · find in folder |
+| ⌘\ | Toggle reader mode |
+| ⌃⌘S | Toggle sidebar |
+| ⌥⌘+ / ⌥⌘- / ⌥⌘0 | Zoom preview in · out · reset |
+| ⇧⌘R | Reveal in Finder |
+
 ## Building
 
-Requires the Xcode Command Line Tools and Node. **Full Xcode is not needed.**
-
-```bash
-./build.sh
-```
-
-That builds the web bundle with esbuild, compiles with SwiftPM, assembles
-`MDApp.app`, generates the icon, and signs it ad-hoc. Then:
-
-```bash
-open MDApp.app
-```
-
-Options:
+Options for `build.sh`:
 
 | Flag | Effect |
 |---|---|
@@ -154,6 +186,10 @@ The app renders untrusted files, so:
   unsafe URLs are stripped. This is what GitHub does. Both halves are separately
   switchable in Settings › Security.
 - A CSP restricts the page to the `mdapp:` origin.
+- A document's relative links and images (`mdapp://doc/...`), and `~/`-relative
+  ones (`mdapp://home/...`), are resolved and then checked to make sure the
+  result didn't walk out of the document's folder or your home directory with
+  a `../` — a document can't use that to read files elsewhere on disk.
 - Remote content is off by default.
 - `http(s)` links open in your browser; `javascript:` and `file:` are refused.
 - The app is not sandboxed — it has no signing identity and needs free file
@@ -173,25 +209,6 @@ The app renders untrusted files, so:
   visible and active — so it cannot be driven headlessly. Export as PDF does not
   touch the print subsystem at all and is fully tested; Print refuses rather
   than hanging if there is no visible window.
-
-## Keyboard shortcuts
-
-| | |
-|---|---|
-| ⌘N / ⌘O / ⌘S / ⇧⌘S | New · Open · Save · Save As |
-| ⇧⌘O | Open folder in the sidebar |
-| ⌘W | Close tab |
-| ⇧⌘] / ⇧⌘[ | Next / previous tab |
-| ⌘B / ⌘I / ⌘K / ⌘E | Bold · Italic · Link · Inline code |
-| ⇧⌘X / ⇧⌘E | Strikethrough · Code block |
-| ⌘1–⌘6 / ⌘0 | Heading level · body text |
-| ⇧⌘L / ⌥⌘L / ⇧⌘' | Bulleted · numbered list · blockquote |
-| ⌘F / ⌥⌘F | Find · find and replace |
-| ⇧⌘P / ⇧⌘F | Quick open · find in folder |
-| ⌘\ | Toggle reader mode |
-| ⌃⌘S | Toggle sidebar |
-| ⌥⌘+ / ⌥⌘- / ⌥⌘0 | Zoom preview in · out · reset |
-| ⇧⌘R | Reveal in Finder |
 
 ## Licence
 
