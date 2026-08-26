@@ -14,7 +14,7 @@ import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
 
 import { vim } from '@replit/codemirror-vim';
-import { claudeEditorTheme, claudeSyntax } from './theme.js';
+import { editorTheme, editorSyntaxHighlighting } from './theme.js';
 import { COMMANDS, continueList } from './commands.js';
 import { handlePaste, handleDrop } from './paste.js';
 
@@ -72,8 +72,8 @@ export class Editor {
       placeholder('Start writing…'),
 
       markdown({ base: markdownLanguage, codeLanguages: languages, addKeymap: false }),
-      claudeEditorTheme,
-      claudeSyntax,
+      editorTheme,
+      editorSyntaxHighlighting,
 
       keymap.of([
         // Enter continues lists before CodeMirror's default newline runs.

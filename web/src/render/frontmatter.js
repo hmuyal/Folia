@@ -45,7 +45,7 @@ function scalar(v) {
   return esc(v);
 }
 
-/* Renders front matter as the metadata card QLMarkdown produces. */
+/* Renders YAML front matter as a metadata card. */
 export function renderFrontMatter(fm) {
   if (!fm || fm.raw === null) return '';
 

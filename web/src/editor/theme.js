@@ -5,7 +5,7 @@ import { tags as t } from '@lezer/highlight';
 /* Every colour is a CSS custom property, so one theme definition serves both
    light and dark — the document's data-theme attribute drives it. */
 
-export const claudeEditorTheme = EditorView.theme({
+export const editorTheme = EditorView.theme({
   '&': {
     color: 'var(--ed-text)',
     backgroundColor: 'var(--ed-bg)',
@@ -114,7 +114,7 @@ export const claudeEditorTheme = EditorView.theme({
 /* Markdown source highlighting. Headings step up in size the way they do in
    the rendered document, and the syntax punctuation recedes so the prose
    stays readable through the markup. */
-export const claudeHighlightStyle = HighlightStyle.define([
+export const editorHighlightStyle = HighlightStyle.define([
   { tag: t.heading1, color: 'var(--ed-heading)', fontWeight: '700', fontSize: '1.32em' },
   { tag: t.heading2, color: 'var(--ed-heading)', fontWeight: '700', fontSize: '1.20em' },
   { tag: t.heading3, color: 'var(--ed-heading)', fontWeight: '600', fontSize: '1.10em' },
@@ -150,4 +150,4 @@ export const claudeHighlightStyle = HighlightStyle.define([
   { tag: t.invalid,        color: 'var(--error)' },
 ]);
 
-export const claudeSyntax = syntaxHighlighting(claudeHighlightStyle);
+export const editorSyntaxHighlighting = syntaxHighlighting(editorHighlightStyle);

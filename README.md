@@ -5,8 +5,8 @@ a wrapper around a text field. Split-pane editing with a live preview, a
 folder sidebar for browsing a whole vault of notes, and export to HTML, PDF,
 TextBundle or rich text, all running completely offline.
 
-Rendering aims at parity with [QLMarkdown](https://github.com/sbarex/QLMarkdown);
-the look and feel comes from the Claude design system.
+A warm, editorial look — cream canvas, serif headings, coral accents — instead
+of the generic dark-mode-IDE aesthetic most Markdown apps default to.
 
 ![MDApp's split editor and preview](docs/screenshots/editor-preview.png)
 
@@ -32,11 +32,12 @@ Gatekeeper warning — right-click the app and choose **Open** once to clear it.
 
 ## What it does
 
-**Reads** — CommonMark + GFM plus the extensions QLMarkdown adds: `==highlight==`,
-`~sub~`, `^sup^`, `++ins++`, footnotes, definition lists, abbreviations, emoji
-shortcodes, heading anchors, YAML front matter rendered as a metadata card, math
-via KaTeX, Mermaid diagrams, syntax-highlighted code in 49 languages, GitHub
-alerts (`> [!NOTE]`), `:::` containers, and optional `[[wiki links]]`.
+**Reads** — CommonMark + GFM plus a broad set of popular extensions:
+`==highlight==`, `~sub~`, `^sup^`, `++ins++`, footnotes, definition lists,
+abbreviations, emoji shortcodes, heading anchors, YAML front matter rendered
+as a metadata card, math via KaTeX, Mermaid diagrams, syntax-highlighted code
+in 49 languages, GitHub alerts (`> [!NOTE]`), `:::` containers, and optional
+`[[wiki links]]`.
 
 **Browses** — open a folder in the sidebar and switch or close it from the
 footer control at its base, or from File › Open Folder / Open Recent Folder /
@@ -120,9 +121,9 @@ Swift owns the filesystem; the page never sees a `file://` URL. Everything the
 WebView loads arrives over a private `mdapp://` scheme whose handler serves the
 app bundle and the current document's folder, and nothing else.
 
-The renderer lives in JavaScript deliberately: several of QLMarkdown's
-extensions are its author's own C patches to cmark-gfm rather than upstream
-features, and `markdown-it` has all of them as maintained plugins.
+The renderer lives in JavaScript deliberately: markdown-it has all of these
+extensions available as maintained plugins, rather than needing custom patches
+to a native parser.
 
 | Path | What |
 |---|---|
@@ -131,26 +132,23 @@ features, and `markdown-it` has all of them as maintained plugins.
 | `web/src/editor/` | CodeMirror setup, theme, commands, paste handling |
 | `web/styles/` | design tokens, document theme, editor theme, shell |
 | `Sources/MDApp/` | the app: models, services, bridge, views |
-| `docs/DESIGN-claude.md` | the design spec the tokens come from |
 
-Two things are declared in more than one place and so are guarded by build-time
-checks:
+One thing is declared in more than one place and so is guarded by a build-time
+check:
 
 | Duplicated | Guard |
 |---|---|
 | Render options — `web/src/render/options.js` and `RenderOptions` in `Preferences.swift`, which are serialised into each other | `Tools/check-options-parity.mjs` — 32 keys |
-| Design tokens — `docs/DESIGN-claude.md`, `web/styles/tokens.css` and `Design/Tokens.swift` | `Tools/check-design-tokens.mjs` — 75 values |
 
-Both run inside `build.sh` and fail the build on drift.
+Design tokens are also declared twice (see below) and guarded the same way.
+Both checks run inside `build.sh` and fail the build on drift.
 
 ## Design
 
-The design spec lives at [`docs/DESIGN-claude.md`](docs/DESIGN-claude.md) and is
-the source of truth. Its tokens are transcribed into `web/styles/tokens.css` for
-the document and mirrored in `Sources/MDApp/Design/Tokens.swift` for native
+The tokens live in `web/styles/tokens.css` and are the source of truth for the
+document; they're mirrored in `Sources/MDApp/Design/Tokens.swift` for native
 chrome. `Tools/check-design-tokens.mjs` runs during `build.sh` and fails the
-build if any colour, radius or spacing value drifts from the spec — 75 checks
-across both files.
+build if any colour, radius or spacing value drifts between the two files.
 
 A few decisions worth knowing about:
 
@@ -203,7 +201,7 @@ The app renders untrusted files, so:
 - **Not notarised.** Locally built and ad-hoc signed. Gatekeeper will warn if
   you move the app to another machine.
 - **KaTeX, not MathJax.** Synchronous and much smaller. It covers essentially
-  all Markdown maths; QLMarkdown uses MathJax if you need an edge case it misses.
+  all Markdown maths, though MathJax handles a few more obscure edge cases.
 - **Print… is the one path not covered by the self-test.** It uses the system
   print dialog via `NSPrintOperation`, which deadlocks whenever the app is not
   visible and active — so it cannot be driven headlessly. Export as PDF does not

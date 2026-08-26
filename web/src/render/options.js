@@ -1,5 +1,5 @@
-/* Extension + option schema. Mirrors QLMarkdown's settings pane one-for-one so
-   the Settings window can be generated from this list. */
+/* Extension + option schema, matching the Settings window one-for-one so it
+   can be generated from this list. */
 
 export const DEFAULT_OPTIONS = {
   /* --- cmark-gfm equivalents --- */
@@ -11,7 +11,7 @@ export const DEFAULT_OPTIONS = {
   allowHTML:        true,   // parse inline/block HTML (GitHub does; sanitised below)
   sanitizeHTML:     true,   // run the result through DOMPurify
 
-  /* --- QLMarkdown's custom extensions --- */
+  /* --- extended Markdown syntax --- */
   highlight:        true,   // ==mark==
   subscript:        true,   // ~sub~
   superscript:      true,   // ^sup^
@@ -24,7 +24,7 @@ export const DEFAULT_OPTIONS = {
   mermaid:          true,
   syntaxHighlight:  true,
 
-  /* --- extras beyond QLMarkdown --- */
+  /* --- further extras --- */
   deflist:          true,
   abbr:             true,
   attrs:            true,

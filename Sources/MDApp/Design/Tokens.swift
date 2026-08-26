@@ -1,8 +1,9 @@
 import SwiftUI
 
-/// The Claude design system, mirrored from `web/styles/tokens.css` for native
-/// chrome. The two must stay in step: the WebView renders the document, AppKit
-/// renders everything around it, and a mismatch shows as a seam.
+/// The design system's tokens, mirrored from `web/styles/tokens.css` for
+/// native chrome. The two must stay in step: the WebView renders the
+/// document, AppKit renders everything around it, and a mismatch shows as a
+/// seam.
 enum Tok {
 
     // MARK: Brand & accent
@@ -75,7 +76,7 @@ enum Tok {
                 : .system(size: size, weight: weight, design: .monospaced)
         }
 
-        // Named roles from DESIGN-claude.md
+        // Named roles used throughout the app's native chrome
         static var navLink: Font { body(14, weight: .medium) }
         static var button:  Font { body(14, weight: .medium) }
         static var bodyMD:  Font { body(16) }

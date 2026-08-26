@@ -1,5 +1,5 @@
 /* =============================================================================
-   preview.css — the Claude design system applied to a Markdown document.
+   preview.css — the design system applied to a rendered Markdown document.
    Layout uses a named-line grid so prose holds the 760px measure while
    tables / code / diagrams break out to 1100px.
    ============================================================================= */
@@ -496,7 +496,7 @@
 }
 
 /* =============================================================================
-   Front matter — rendered as a metadata card, per QLMarkdown
+   Front matter — rendered as a metadata card
    ============================================================================= */
 .md-doc .frontmatter {
   background: var(--doc-soft);

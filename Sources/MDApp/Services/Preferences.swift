@@ -14,7 +14,7 @@ struct RenderOptions: Codable, Equatable {
     var allowHTML        = true
     var sanitizeHTML     = true
 
-    // QLMarkdown's custom extensions
+    // Extended Markdown syntax
     var highlight        = true
     var subscriptText    = true
     var superscriptText  = true

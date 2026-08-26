@@ -1,6 +1,7 @@
 /* =============================================================================
-   tokens.css — Claude design system, transcribed from DESIGN-claude.md
-   Every value here is verbatim from that spec unless marked DERIVED.
+   tokens.css — the design system's colours, radii and spacing.
+   Mirrored in Sources/MDApp/Design/Tokens.swift for native chrome; values here
+   are the base tokens unless marked DERIVED.
    ============================================================================= */
 
 :root {
@@ -44,7 +45,7 @@
   --r-lg:   12px;
   --r-xl:   16px;
   --r-pill: 9999px;
-  --r-full: 9999px;   /* spec keeps pill and full distinct; same value today */
+  --r-full: 9999px;   /* pill and full are kept distinct in case they diverge later; same value today */
 
   /* --- Spacing (base unit 4px) ------------------------------------------- */
   --s-xxs:  4px;
@@ -57,14 +58,15 @@
   --s-section: 96px;
 
   /* --- Type families ----------------------------------------------------- */
-  /* Copernicus and StyreneB are licensed Anthropic faces. DESIGN-claude.md
-     names EB Garamond / Cormorant Garamond and Inter as the open substitutes. */
+  /* Copernicus and StyreneB are licensed faces; EB Garamond and Inter are the
+     open substitutes used here. */
   --font-display: "EB Garamond", "Tiempos Headline", Palatino, Georgia, serif;
   --font-body:    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono:    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /* --- DERIVED: document semantics --------------------------------------- *
-   * The spec describes a marketing surface. These re-pitch it for a reader.  */
+   * The base palette describes a marketing surface. These re-pitch it for a
+   * reading surface.                                                        */
   --doc-bg:            var(--canvas);
   --doc-text:          var(--body);
   --doc-text-strong:   var(--body-strong);
@@ -95,8 +97,8 @@
   --code-gutter:  #6a665e;
   --code-label:   var(--on-dark-soft);
 
-  /* Reading measure. The spec's 1200px is a marketing container; prose needs
-     a ~72ch measure. Wide elements break out to --measure-wide. */
+  /* Reading measure. 1200px suits a marketing container; prose needs a ~72ch
+     measure. Wide elements break out to --measure-wide. */
   --measure:      760px;
   --measure-wide: 1100px;
 
@@ -108,7 +110,7 @@
 }
 
 /* =============================================================================
-   Dark theme — built from the spec's own dark surfaces
+   Dark theme — built from the palette's own dark surfaces
    ============================================================================= */
 :root[data-theme="dark"] {
   --doc-bg:          var(--surface-dark);
@@ -143,7 +145,7 @@
 }
 
 /* =============================================================================
-   Syntax palette — "muted blues / oranges / grays" per the spec.
+   Syntax palette — muted blues, oranges and grays.
    Identical in both themes; code surfaces are always dark.
    ============================================================================= */
 :root {

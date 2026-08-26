@@ -172,8 +172,8 @@ function instanceFor(opts) {
   return cached.md;
 }
 
-/* Whole document as syntax-highlighted source — QLMarkdown's
-   "Render as source code" mode. */
+/* Whole document as syntax-highlighted source — a "render as source code"
+   mode. */
 function renderAsSource(src) {
   const { html } = highlightCode(src, 'markdown', true);
   return {

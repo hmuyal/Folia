@@ -135,8 +135,8 @@ export function languageLabel(lang, resolved) {
   return DISPLAY[key] || lang.charAt(0).toUpperCase() + lang.slice(1);
 }
 
-/* The `code-window-card` from DESIGN-claude.md: dark surface, chrome bar with
-   language chip and copy button, inner code panel, optional gutter. */
+/* The `code-window-card`: dark surface, chrome bar with language chip and
+   copy button, inner code panel, optional gutter. */
 export function codeWindowPlugin(md, getOpts) {
   md.renderer.rules.fence = (tokens, idx) => {
     const token = tokens[idx];

@@ -1,8 +1,8 @@
 /* =============================================================================
    fonts.css — bundled woff2, no network. All SIL Open Font License.
-   EB Garamond    : substitute for Copernicus  (named in DESIGN-claude.md)
-   Inter          : substitute for StyreneB    (named in DESIGN-claude.md)
-   JetBrains Mono : code, per the spec
+   EB Garamond    : open substitute for the display face (Copernicus)
+   Inter          : open substitute for the titles face (StyreneB)
+   JetBrains Mono : code
    ============================================================================= */
 
 /* --- EB Garamond — display ---------------------------------------------- */

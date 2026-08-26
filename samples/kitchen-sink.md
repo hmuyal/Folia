@@ -28,9 +28,9 @@ a dotted underline and reveal its expansion on hover.
 
 Emoji shortcodes: :rocket: :sparkles: :warning: :white_check_mark: :books:
 
-Autolinks: https://github.com/sbarex/QLMarkdown and hello@example.com.
+Autolinks: https://www.markdownguide.org and hello@example.com.
 
-A [regular link](https://claude.ai), an [internal link](./other.md), and a
+A [regular link](https://example.com), an [internal link](./other.md), and a
 [section link](#tables).
 
 ## Headings
@@ -109,10 +109,10 @@ Inline `const x = 42;` and a fenced block:
 ```swift
 import SwiftUI
 
-/// A view that renders Markdown with the Claude design system.
+/// A view that renders Markdown with the app's design tokens.
 struct DocumentView: View {
     @State private var text: String = ""
-    let tokens = DesignTokens.claude
+    let tokens = DesignTokens.shared
 
     var body: some View {
         SplitView {

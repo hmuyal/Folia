@@ -47,7 +47,7 @@ fi
 say "Checking Swift/JS render-option parity"
 node Tools/check-options-parity.mjs || die "render options are out of sync"
 
-say "Checking design tokens against the spec"
+say "Checking design tokens are in sync"
 node Tools/check-design-tokens.mjs || die "design tokens are out of sync"
 
 # -------------------------------------------------------------- binary -----
