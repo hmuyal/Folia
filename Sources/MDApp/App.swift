@@ -53,6 +53,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         } else {
             pendingOpens.append(contentsOf: urls)
         }
+        // WindowGroup opens a fresh window for this event on its own, in
+        // parallel with (and regardless of) the above — most visibly when
+        // the document is already open, since then this is the only sign
+        // anything happened. Fold it back into the one window we actually
+        // want; this is a single-window app, tabs carry multiple documents.
+        DispatchQueue.main.async { [weak self] in self?.consolidateWindows() }
+    }
+
+    /// Closes every window this WindowGroup has opened beyond the one already
+    /// on screen, keeping the key one (or the frontmost) if there's a choice.
+    /// Settings and panels (alerts, open/save dialogs) aren't affected: they
+    /// don't carry the app's own window title, and Settings starts hidden.
+    private func consolidateWindows() {
+        let contentWindows = NSApp.windows.filter { $0.isVisible && $0.title == "MDApp" }
+        guard contentWindows.count > 1 else { return }
+        let keep = contentWindows.first { $0.isKeyWindow } ?? contentWindows[0]
+        for window in contentWindows where window !== keep { window.close() }
     }
 
     /// Returns true when files were waiting to be opened.
