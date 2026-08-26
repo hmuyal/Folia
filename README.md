@@ -1,4 +1,4 @@
-# MDApp
+# Folia
 
 A fast, good-looking Markdown reader and editor for macOS — a native app, not
 a wrapper around a text field. Split-pane editing with a live preview, a
@@ -8,21 +8,21 @@ TextBundle or rich text, all running completely offline.
 A warm, editorial look — cream canvas, serif headings, coral accents — instead
 of the generic dark-mode-IDE aesthetic most Markdown apps default to.
 
-![MDApp's split editor and preview](docs/screenshots/editor-preview.png)
+![Folia's split editor and preview](docs/screenshots/editor-preview.png)
 
 ## Get it running
 
 You need Xcode's Command Line Tools and Node — **not** full Xcode.
 
 ```bash
-git clone https://github.com/hmuyal/MDApp.git
-cd MDApp
+git clone https://github.com/hmuyal/Folia.git
+cd Folia
 ./build.sh
-open MDApp.app
+open Folia.app
 ```
 
 That's it. `build.sh` builds the web bundle, compiles the Swift app, generates
-the icon and signs it ad-hoc — it produces a working `MDApp.app` right there
+the icon and signs it ad-hoc — it produces a working `Folia.app` right there
 in the folder. Drag it into `/Applications` to keep it, and it'll register
 itself as a handler for Markdown files, so double-click, Open With and
 dragging a `.md` file onto its Dock icon all just work.
@@ -91,7 +91,7 @@ Options for `build.sh`:
 ### Verifying a build
 
 ```bash
-./MDApp.app/Contents/MacOS/MDApp --selftest samples/kitchen-sink.md
+./Folia.app/Contents/MacOS/Folia --selftest samples/kitchen-sink.md
 ```
 
 This boots the real WebView headlessly, serves the real bundle over the app's
@@ -118,7 +118,7 @@ Swift / AppKit + SwiftUI          window · menus · tabs · sidebar
 ```
 
 Swift owns the filesystem; the page never sees a `file://` URL. Everything the
-WebView loads arrives over a private `mdapp://` scheme whose handler serves the
+WebView loads arrives over a private `folia://` scheme whose handler serves the
 app bundle and the current document's folder, and nothing else.
 
 The renderer lives in JavaScript deliberately: markdown-it has all of these
@@ -131,7 +131,7 @@ to a native parser.
 | `web/src/preview/` | sanitising, Mermaid, breakout measuring, the Preview class |
 | `web/src/editor/` | CodeMirror setup, theme, commands, paste handling |
 | `web/styles/` | design tokens, document theme, editor theme, shell |
-| `Sources/MDApp/` | the app: models, services, bridge, views |
+| `Sources/Folia/` | the app: models, services, bridge, views |
 
 One thing is declared in more than one place and so is guarded by a build-time
 check:
@@ -146,7 +146,7 @@ Both checks run inside `build.sh` and fail the build on drift.
 ## Design
 
 The tokens live in `web/styles/tokens.css` and are the source of truth for the
-document; they're mirrored in `Sources/MDApp/Design/Tokens.swift` for native
+document; they're mirrored in `Sources/Folia/Design/Tokens.swift` for native
 chrome. `Tools/check-design-tokens.mjs` runs during `build.sh` and fails the
 build if any colour, radius or spacing value drifts between the two files.
 
@@ -183,9 +183,9 @@ The app renders untrusted files, so:
 - HTML is rendered but sanitised with DOMPurify — scripts, event handlers and
   unsafe URLs are stripped. This is what GitHub does. Both halves are separately
   switchable in Settings › Security.
-- A CSP restricts the page to the `mdapp:` origin.
-- A document's relative links and images (`mdapp://doc/...`), and `~/`-relative
-  ones (`mdapp://home/...`), are resolved and then checked to make sure the
+- A CSP restricts the page to the `folia:` origin.
+- A document's relative links and images (`folia://doc/...`), and `~/`-relative
+  ones (`folia://home/...`), are resolved and then checked to make sure the
   result didn't walk out of the document's folder or your home directory with
   a `../` — a document can't use that to read files elsewhere on disk.
 - Remote content is off by default.
@@ -195,7 +195,7 @@ The app renders untrusted files, so:
 
 ## Known limits
 
-- **No Quick Look extension.** App extensions require full Xcode. MDApp
+- **No Quick Look extension.** App extensions require full Xcode. Folia
   registers as a handler for Markdown files so double-click and Open With work,
   but it does not render Quick Look previews.
 - **Not notarised.** Locally built and ad-hoc signed. Gatekeeper will warn if
@@ -209,6 +209,8 @@ The app renders untrusted files, so:
   than hanging if there is no visible window.
 
 ## Licence
+
+MIT — see [`LICENSE`](LICENSE).
 
 The bundled typefaces (EB Garamond, Inter, JetBrains Mono) are SIL Open Font
 License. Third-party JavaScript keeps its own licences; see `web/package.json`.

@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const { DEFAULT_OPTIONS } = await import(resolve(root, 'web/src/render/options.js'));
 
-const swift = readFileSync(resolve(root, 'Sources/MDApp/Services/Preferences.swift'), 'utf8');
+const swift = readFileSync(resolve(root, 'Sources/Folia/Services/Preferences.swift'), 'utf8');
 const block = swift.match(/enum CodingKeys: String, CodingKey \{([\s\S]*?)\n {4}\}/)?.[1] ?? '';
 
 const swiftKeys = new Set();

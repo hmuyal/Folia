@@ -82,7 +82,7 @@ private struct EmptyStateView: View {
                 .frame(width: 34, height: 34)
                 .opacity(0.85)
 
-            Text("MDApp")
+            Text("Folia")
                 .font(Tok.F.display(32))
                 .foregroundStyle(palette.text)
 

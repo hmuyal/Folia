@@ -1,8 +1,8 @@
 /* The only channel to Swift. Everything the page needs from the host goes
    through here, and nothing else touches window.webkit directly. */
 
-const channel = window.webkit?.messageHandlers?.mdapp;
-const asyncChannel = window.webkit?.messageHandlers?.mdappAsync;
+const channel = window.webkit?.messageHandlers?.folia;
+const asyncChannel = window.webkit?.messageHandlers?.foliaAsync;
 
 /** True when running inside the app rather than the dev harness. */
 export const isHosted = Boolean(channel);

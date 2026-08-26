@@ -2,7 +2,7 @@ import SwiftUI
 import AppKit
 
 @main
-struct MDAppMain: App {
+struct FoliaMain: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var delegate
     @StateObject private var state = AppState()
 
@@ -66,7 +66,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// Settings and panels (alerts, open/save dialogs) aren't affected: they
     /// don't carry the app's own window title, and Settings starts hidden.
     private func consolidateWindows() {
-        let contentWindows = NSApp.windows.filter { $0.isVisible && $0.title == "MDApp" }
+        let contentWindows = NSApp.windows.filter { $0.isVisible && $0.title == "Folia" }
         guard contentWindows.count > 1 else { return }
         let keep = contentWindows.first { $0.isKeyWindow } ?? contentWindows[0]
         for window in contentWindows where window !== keep { window.close() }

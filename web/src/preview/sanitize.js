@@ -1,7 +1,7 @@
 import DOMPurify from 'dompurify';
 
-/* mdapp: must survive — every local image src uses it. */
-const URI_OK = /^(?:(?:https?|mailto|tel|mdapp):|[^a-z]|[a-z+.-]+(?:[^a-z+.\-:]|$))/i;
+/* folia: must survive — every local image src uses it. */
+const URI_OK = /^(?:(?:https?|mailto|tel|folia):|[^a-z]|[a-z+.-]+(?:[^a-z+.\-:]|$))/i;
 
 const CONFIG = {
   /* data-* is allowed wholesale (ALLOW_DATA_ATTR defaults true), which covers

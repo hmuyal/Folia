@@ -55,12 +55,12 @@ for (const [pkg, variants, prefix] of FONTS) {
 }
 cpSync(join(webRoot, 'node_modules/katex/dist/fonts'), join(dirname(output), 'katex-fonts'), { recursive: true });
 
-/* Local images referenced by the document resolve to mdapp://doc/... — for the
+/* Local images referenced by the document resolve to folia://doc/... — for the
    browser test, point them back at the source directory. */
 const docDir = dirname(input);
 const fixed = html
-  .replace(/mdapp:\/\/doc\//g, '')
-  .replace(/src="mdapp:\/\/blocked\/([^"]*)"/g, (_, u) => `src="" data-blocked="${u}"`);
+  .replace(/folia:\/\/doc\//g, '')
+  .replace(/src="folia:\/\/blocked\/([^"]*)"/g, (_, u) => `src="" data-blocked="${u}"`);
 
 const theme = flags.includes('--dark') ? 'dark' : 'light';
 const page = `<!doctype html>

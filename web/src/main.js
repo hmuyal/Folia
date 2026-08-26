@@ -94,7 +94,7 @@ function sendStats(text) {
 
 /* --- the API Swift calls -------------------------------------------------- */
 
-const MDApp = {
+const Folia = {
   setDocument({ id, text, path, cursorLine = 0, scrollLine = 0 }) {
     currentDocumentID = id;
     lastRenderedText = null;
@@ -168,10 +168,10 @@ const MDApp = {
   },
 
   setCustomCSS(css) {
-    let tag = document.getElementById('mdapp-custom-css');
+    let tag = document.getElementById('folia-custom-css');
     if (!tag) {
       tag = document.createElement('style');
-      tag.id = 'mdapp-custom-css';
+      tag.id = 'folia-custom-css';
       document.head.appendChild(tag);
     }
     tag.textContent = css || '';
@@ -199,12 +199,12 @@ const MDApp = {
       title: document.title,
       theme: document.documentElement.dataset.theme,
       forPrint: Boolean(options.print),
-      customCSS: document.getElementById('mdapp-custom-css')?.textContent || '',
+      customCSS: document.getElementById('folia-custom-css')?.textContent || '',
     });
   },
 };
 
-window.MDApp = MDApp;
+window.Folia = Folia;
 
 /* Cmd-S is handled by the host menu, but the WebView sees it first when the
    editor has focus. */

@@ -1,16 +1,16 @@
 import WebKit
 import UniformTypeIdentifiers
 
-/// Serves everything the WebView loads over a private `mdapp://` scheme, so the
+/// Serves everything the WebView loads over a private `folia://` scheme, so the
 /// page never touches `file://` and the CSP can name a single origin.
 ///
-///   mdapp://asset/<path>   bundled JS, CSS and fonts
-///   mdapp://doc/<rel>      resolved against the current document's folder
-///   mdapp://file/<abs>     an absolute path (leading slash dropped)
-///   mdapp://home/<rel>     relative to the user's home directory
-///   mdapp://blocked/<url>  a deliberately refused asset
+///   folia://asset/<path>   bundled JS, CSS and fonts
+///   folia://doc/<rel>      resolved against the current document's folder
+///   folia://file/<abs>     an absolute path (leading slash dropped)
+///   folia://home/<rel>     relative to the user's home directory
+///   folia://blocked/<url>  a deliberately refused asset
 final class AppSchemeHandler: NSObject, WKURLSchemeHandler {
-    static let scheme = "mdapp"
+    static let scheme = "folia"
 
     /// Folder that relative document assets resolve against. Set per active tab.
     var documentBaseDirectory: URL?
@@ -34,7 +34,7 @@ final class AppSchemeHandler: NSObject, WKURLSchemeHandler {
         serveFile(file, task: task, url: url, cache: cache)
     }
 
-    /// Maps an mdapp:// URL onto a real file, or nil when it does not resolve.
+    /// Maps a folia:// URL onto a real file, or nil when it does not resolve.
     /// Shared by the scheme handler and by asset inlining during export.
     func fileURL(for url: URL) -> URL? {
         let host = url.host ?? ""
@@ -58,7 +58,7 @@ final class AppSchemeHandler: NSObject, WKURLSchemeHandler {
         }
     }
 
-    /// Reads an mdapp:// asset as a data: URI, for self-contained export.
+    /// Reads a folia:// asset as a data: URI, for self-contained export.
     func dataURI(for urlString: String, maxBytes: Int = 8 * 1024 * 1024) -> String? {
         guard let url = URL(string: urlString), url.scheme == Self.scheme,
               let file = fileURL(for: url),
@@ -68,7 +68,7 @@ final class AppSchemeHandler: NSObject, WKURLSchemeHandler {
         return "data:\(mimeType(for: file));base64,\(data.base64EncodedString())"
     }
 
-    /// Plain-text contents of an mdapp:// asset (used for the stylesheet).
+    /// Plain-text contents of a folia:// asset (used for the stylesheet).
     func text(for urlString: String) -> String? {
         guard let url = URL(string: urlString), url.scheme == Self.scheme,
               let file = fileURL(for: url) else { return nil }

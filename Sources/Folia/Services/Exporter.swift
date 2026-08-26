@@ -186,7 +186,7 @@ enum Exporter {
                 "version": 2,
                 "type": "net.daringfireball.markdown",
                 "transient": false,
-                "creatorIdentifier": Bundle.main.bundleIdentifier ?? "com.hmuyal.mdapp",
+                "creatorIdentifier": Bundle.main.bundleIdentifier ?? "com.hmuyal.folia",
             ]
             let infoData = try JSONSerialization.data(withJSONObject: info,
                                                       options: [.prettyPrinted, .sortedKeys])

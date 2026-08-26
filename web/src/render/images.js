@@ -1,7 +1,7 @@
 /* Rewrites image and link targets so the WebView never sees a file:// URL.
 
-   mdapp://doc/<relative path>   -> resolved against the document's directory
-   mdapp://file/<absolute path>  -> an absolute path on disk
+   folia://doc/<relative path>   -> resolved against the document's directory
+   folia://file/<absolute path>  -> an absolute path on disk
    remote URLs                   -> left alone if allowed, neutralised if not   */
 
 const REMOTE = /^(https?:)?\/\//i;
@@ -10,20 +10,20 @@ const DATA_URI = /^data:/i;
 export function resolveAssetURL(src, opts) {
   if (!src) return src;
   if (DATA_URI.test(src)) return src;
-  if (src.startsWith('mdapp://')) return src;
+  if (src.startsWith('folia://')) return src;
 
   if (REMOTE.test(src)) {
-    return opts.allowRemoteContent ? src : `mdapp://blocked/${encodeURIComponent(src)}`;
+    return opts.allowRemoteContent ? src : `folia://blocked/${encodeURIComponent(src)}`;
   }
-  if (!opts.inlineImages) return `mdapp://blocked/${encodeURIComponent(src)}`;
+  if (!opts.inlineImages) return `folia://blocked/${encodeURIComponent(src)}`;
 
   let path = src;
   if (path.startsWith('file://')) {
     try { path = decodeURI(new URL(path).pathname); } catch { /* keep as-is */ }
   }
-  if (path.startsWith('~/')) return `mdapp://home/${encodePath(path.slice(2))}`;
-  if (path.startsWith('/'))  return `mdapp://file/${encodePath(path.slice(1))}`;
-  return `mdapp://doc/${encodePath(path)}`;
+  if (path.startsWith('~/')) return `folia://home/${encodePath(path.slice(2))}`;
+  if (path.startsWith('/'))  return `folia://file/${encodePath(path.slice(1))}`;
+  return `folia://doc/${encodePath(path)}`;
 }
 
 function encodePath(p) {

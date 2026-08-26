@@ -2,7 +2,7 @@
  * Verifies that the design tokens and their native-chrome mirror agree.
  *
  * Colours, radii and spacing are hand-transcribed into two places —
- * web/styles/tokens.css for the document, and Sources/MDApp/Design/Tokens.swift
+ * web/styles/tokens.css for the document, and Sources/Folia/Design/Tokens.swift
  * for native chrome — so without a check they drift silently and the seam
  * between chrome and content starts to show.
  */
@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const css   = readFileSync(resolve(root, 'web/styles/tokens.css'), 'utf8');
-const swift = readFileSync(resolve(root, 'Sources/MDApp/Design/Tokens.swift'), 'utf8');
+const swift = readFileSync(resolve(root, 'Sources/Folia/Design/Tokens.swift'), 'utf8');
 
 const COLOR_KEYS = [
   'primary', 'primary-active', 'primary-disabled', 'ink', 'body', 'body-strong',

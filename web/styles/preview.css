@@ -666,7 +666,7 @@
 .md-doc p, .md-doc li, .md-doc td, .md-doc dd { overflow-wrap: break-word; }
 
 /* Blocked remote/missing assets */
-.md-doc img[src^="mdapp://blocked"],
+.md-doc img[src^="folia://blocked"],
 .md-doc img[src=""] { display: none; }
 
 /* Print: flatten the grid, keep code legible, avoid orphaned headings */

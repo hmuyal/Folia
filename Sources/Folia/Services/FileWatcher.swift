@@ -11,7 +11,7 @@ final class FileWatcher {
     private var dirSource: DispatchSourceFileSystemObject?
     private var fileDescriptor: Int32 = -1
     private var dirDescriptor: Int32 = -1
-    private let queue = DispatchQueue(label: "com.hmuyal.mdapp.filewatcher")
+    private let queue = DispatchQueue(label: "com.hmuyal.folia.filewatcher")
 
     private(set) var url: URL
     private let onChange: (URL) -> Void

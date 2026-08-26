@@ -65,18 +65,18 @@ final class WebBridge: NSObject, ObservableObject {
         webView.allowsMagnification = false
         webView.allowsBackForwardNavigationGestures = false
 
-        controller.add(MessageProxy(self), name: "mdapp")
-        controller.addScriptMessageHandler(ReplyProxy(self), contentWorld: .page, name: "mdappAsync")
+        controller.add(MessageProxy(self), name: "folia")
+        controller.addScriptMessageHandler(ReplyProxy(self), contentWorld: .page, name: "foliaAsync")
         webView.navigationDelegate = self
         webView.uiDelegate = self
 
-        if ProcessInfo.processInfo.environment["MDAPP_INSPECT"] != nil {
+        if ProcessInfo.processInfo.environment["FOLIA_INSPECT"] != nil {
             webView.isInspectable = true
         }
     }
 
     func loadShell() {
-        guard let url = URL(string: "mdapp://asset/index.html") else { return }
+        guard let url = URL(string: "folia://asset/index.html") else { return }
         webView.load(URLRequest(url: url))
     }
 
@@ -91,8 +91,8 @@ final class WebBridge: NSObject, ObservableObject {
         run { [weak self] in
             guard let self else { return }
             let json = argument.map(Self.jsonLiteral) ?? ""
-            self.webView.evaluateJavaScript("window.MDApp && MDApp.\(function)(\(json));") { _, error in
-                if let error { NSLog("MDApp JS error in \(function): \(error)") }
+            self.webView.evaluateJavaScript("window.Folia && Folia.\(function)(\(json));") { _, error in
+                if let error { NSLog("Folia JS error in \(function): \(error)") }
             }
         }
     }
@@ -118,18 +118,18 @@ final class WebBridge: NSObject, ObservableObject {
     /// Async round-trips use callAsyncJavaScript so there is no request-id dance.
     @MainActor
     func exportHTML(standalone: Bool) async -> String? {
-        await callAsync("return await MDApp.exportHTML(standalone);",
+        await callAsync("return await Folia.exportHTML(standalone);",
                         args: ["standalone": standalone]) as? String
     }
 
     @MainActor
     func currentText() async -> String? {
-        await callAsync("return MDApp.getText();") as? String
+        await callAsync("return Folia.getText();") as? String
     }
 
     @MainActor
     func printableHTML() async -> String? {
-        await callAsync("return await MDApp.exportHTML(true, { print: true });") as? String
+        await callAsync("return await Folia.exportHTML(true, { print: true });") as? String
     }
 
     /// Already on the main actor, so the continuation can call straight into
@@ -141,7 +141,7 @@ final class WebBridge: NSObject, ObservableObject {
                 switch result {
                 case .success(let value): continuation.resume(returning: value)
                 case .failure(let error):
-                    NSLog("MDApp async JS error: \(error)")
+                    NSLog("Folia async JS error: \(error)")
                     continuation.resume(returning: nil)
                 }
             }
@@ -239,12 +239,12 @@ extension WebBridge: WKNavigationDelegate, WKUIDelegate {
     }
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-        NSLog("MDApp shell navigation failed: \(error.localizedDescription)")
+        NSLog("Folia shell navigation failed: \(error.localizedDescription)")
     }
 
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!,
                  withError error: Error) {
-        NSLog("MDApp shell failed to load: \(error.localizedDescription)")
+        NSLog("Folia shell failed to load: \(error.localizedDescription)")
     }
 
     /// window.open and target=_blank both route to the default browser.

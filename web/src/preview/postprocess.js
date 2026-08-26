@@ -6,7 +6,7 @@ import { resolveAssetURL } from '../render/images.js';
 export function resolveRawImages(root, opts) {
   for (const img of root.querySelectorAll('img')) {
     const src = img.getAttribute('src') || '';
-    if (!src || src.startsWith('mdapp://') || src.startsWith('data:')) continue;
+    if (!src || src.startsWith('folia://') || src.startsWith('data:')) continue;
     img.setAttribute('data-src-original', src);
     img.setAttribute('src', resolveAssetURL(src, opts));
   }
@@ -23,9 +23,9 @@ export function markBrokenImages(root) {
       const span = document.createElement('span');
       span.className = 'md-image-error';
       const original = img.getAttribute('data-src-original') || img.getAttribute('src') || '';
-      const blocked = original.startsWith('mdapp://blocked') || img.src.includes('mdapp://blocked');
+      const blocked = original.startsWith('folia://blocked') || img.src.includes('folia://blocked');
       span.textContent = blocked
-        ? `remote image blocked — ${decodeURIComponent(original.replace('mdapp://blocked/', ''))}`
+        ? `remote image blocked — ${decodeURIComponent(original.replace('folia://blocked/', ''))}`
         : `image not found — ${original}`;
       img.replaceWith(span);
     }, { once: true });

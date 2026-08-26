@@ -3,8 +3,8 @@ import WebKit
 import CoreGraphics
 
 /// Headless integration check: boots the real WebView, serves the real bundle
-/// over mdapp://, pushes a document through the real bridge, then inspects the
-/// resulting DOM. Run with `MDApp --selftest <file.md>`.
+/// over folia://, pushes a document through the real bridge, then inspects the
+/// resulting DOM. Run with `Folia --selftest <file.md>`.
 ///
 /// This is the only way to verify the Swift/JS seam without a visible window,
 /// and it doubles as the project's smoke test.
@@ -39,7 +39,7 @@ enum SelfTest {
             .dropFirst()
             .first
 
-        print("\nMDApp self-test")
+        print("\nFolia self-test")
         print("───────────────")
 
         let bridge = WebBridge()
@@ -90,8 +90,8 @@ enum SelfTest {
         while !ready && Date() < readyDeadline {
             try? await Task.sleep(nanoseconds: 50_000_000)
         }
-        check("web shell loads over mdapp://", ready,
-              ready ? "" : "MDApp.ready() never fired — check Resources/web")
+        check("web shell loads over folia://", ready,
+              ready ? "" : "Folia.ready() never fired — check Resources/web")
         guard ready else { flush(failures); exit(1) }
 
         // --- push a document -------------------------------------------------
@@ -133,7 +133,7 @@ enum SelfTest {
           brokenImgs: q('.md-image-error'),
           inlineScripts: q('script:not([src])'),
           editorLines: q('.cm-line'),
-          editorText: (window.MDApp?.getText() || '').length,
+          editorText: (window.Folia?.getText() || '').length,
           docChars:   document.querySelector('.md-doc')?.innerText.length || 0,
           breakout:   q('.breakout'),
         };
@@ -185,12 +185,12 @@ enum SelfTest {
               exported.contains("data:font") ? "" : "no font data URI found")
         // Report what is actually unresolved rather than just that something is.
         let leftovers = Self.leftoverReferences(in: exported)
-        check("export has no mdapp:// left", leftovers.isEmpty,
+        check("export has no folia:// left", leftovers.isEmpty,
               leftovers.isEmpty ? "" : leftovers.joined(separator: ", "))
 
         if !leftovers.isEmpty {
             let dump = FileManager.default.temporaryDirectory
-                .appendingPathComponent("mdapp-export-dump.html")
+                .appendingPathComponent("folia-export-dump.html")
             try? exported.write(to: dump, atomically: true, encoding: .utf8)
             print("     export written to \(dump.path)")
         }
@@ -201,7 +201,7 @@ enum SelfTest {
         // --- PDF --------------------------------------------------------------
         if let printable = await bridge.printableHTML() {
             let pdfURL = FileManager.default.temporaryDirectory
-                .appendingPathComponent("mdapp-selftest.pdf")
+                .appendingPathComponent("folia-selftest.pdf")
             try? FileManager.default.removeItem(at: pdfURL)
 
             do {
@@ -232,13 +232,13 @@ enum SelfTest {
         exit(failures == 0 ? 0 : 1)
     }
 
-    /// Unresolved mdapp:// *references* in exported HTML.
+    /// Unresolved folia:// *references* in exported HTML.
     /// Deliberately ignores the string appearing inside a CSS selector such as
-    /// `img[src^="mdapp://blocked"]`, which is a rule, not a dangling asset.
+    /// `img[src^="folia://blocked"]`, which is a rule, not a dangling asset.
     private static func leftoverReferences(in html: String) -> [String] {
         let patterns = [
-            #"(?:src|href|poster)\s*=\s*"mdapp://[^"]*""#,
-            #"url\(\s*['"]?mdapp://[^)]*\)"#,
+            #"(?:src|href|poster)\s*=\s*"folia://[^"]*""#,
+            #"url\(\s*['"]?folia://[^)]*\)"#,
         ]
         var found: Set<String> = []
         for pattern in patterns {

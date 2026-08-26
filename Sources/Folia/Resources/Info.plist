@@ -2,15 +2,15 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-  <key>CFBundleName</key>                 <string>MDApp</string>
-  <key>CFBundleDisplayName</key>          <string>MDApp</string>
-  <key>CFBundleExecutable</key>           <string>MDApp</string>
-  <key>CFBundleIdentifier</key>           <string>com.hmuyal.mdapp</string>
+  <key>CFBundleName</key>                 <string>Folia</string>
+  <key>CFBundleDisplayName</key>          <string>Folia</string>
+  <key>CFBundleExecutable</key>           <string>Folia</string>
+  <key>CFBundleIdentifier</key>           <string>com.hmuyal.folia</string>
   <key>CFBundlePackageType</key>          <string>APPL</string>
   <key>CFBundleInfoDictionaryVersion</key><string>6.0</string>
   <key>CFBundleShortVersionString</key>   <string>__VERSION__</string>
   <key>CFBundleVersion</key>              <string>__BUILD__</string>
-  <key>CFBundleIconFile</key>             <string>MDApp</string>
+  <key>CFBundleIconFile</key>             <string>Folia</string>
   <key>LSMinimumSystemVersion</key>       <string>14.0</string>
   <key>LSApplicationCategoryType</key>    <string>public.app-category.productivity</string>
   <key>NSPrincipalClass</key>             <string>NSApplication</string>
@@ -19,7 +19,7 @@
   <key>NSSupportsSuddenTermination</key>  <false/>
   <key>NSHumanReadableCopyright</key>     <string>Markdown reader and editor</string>
 
-  <!-- Files MDApp can open. LSHandlerRank Alternate keeps it a candidate in
+  <!-- Files Folia can open. LSHandlerRank Alternate keeps it a candidate in
        Open With without seizing .md from the user's current default. -->
   <key>CFBundleDocumentTypes</key>
   <array>
@@ -30,7 +30,7 @@
       <key>LSItemContentTypes</key>
       <array>
         <string>net.daringfireball.markdown</string>
-        <string>com.hmuyal.mdapp.markdown-variant</string>
+        <string>com.hmuyal.folia.markdown-variant</string>
         <string>public.plain-text</string>
       </array>
     </dict>
@@ -67,7 +67,7 @@
       </dict>
     </dict>
     <dict>
-      <key>UTTypeIdentifier</key>   <string>com.hmuyal.mdapp.markdown-variant</string>
+      <key>UTTypeIdentifier</key>   <string>com.hmuyal.folia.markdown-variant</string>
       <key>UTTypeDescription</key>  <string>Markdown Variant</string>
       <key>UTTypeConformsTo</key>   <array><string>public.plain-text</string></array>
       <key>UTTypeTagSpecification</key>

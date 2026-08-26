@@ -1,6 +1,6 @@
 ---
 title: Kitchen Sink
-author: MDApp
+author: Folia
 version: 1.0.0
 tags: [markdown, rendering, test]
 draft: false
@@ -9,7 +9,7 @@ reviewed: 2026-08-25
 
 # The Kitchen Sink
 
-A single document that exercises every rendering feature MDApp claims to support.
+A single document that exercises every rendering feature Folia claims to support.
 If something here looks wrong, the renderer is wrong.
 
 ## Typography and inline marks
@@ -147,7 +147,7 @@ const render = (src, opts = {}) => {
 
 ```json
 {
-  "name": "mdapp",
+  "name": "folia",
   "version": "1.0.0",
   "private": true,
   "nested": { "array": [1, 2, 3], "bool": true, "null": null }
@@ -158,7 +158,7 @@ const render = (src, opts = {}) => {
 #!/usr/bin/env bash
 set -euo pipefail
 swift build -c release --arch arm64
-codesign --force --sign - "MDApp.app"
+codesign --force --sign - "Folia.app"
 ```
 
 ```sql

@@ -81,8 +81,8 @@ function buildHTML() {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src mdapp: data: blob: http: https:; font-src mdapp: data: 'self'; style-src 'unsafe-inline' 'self' mdapp:; script-src 'self' mdapp: 'unsafe-eval'; connect-src 'self' mdapp:;">
-<title>MDApp</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src folia: data: blob: http: https:; font-src folia: data: 'self'; style-src 'unsafe-inline' 'self' folia:; script-src 'self' folia: 'unsafe-eval'; connect-src 'self' folia:;">
+<title>Folia</title>
 <link rel="stylesheet" href="app.css">
 </head>
 <body>

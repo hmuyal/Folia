@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# Builds MDApp.app without Xcode: SwiftPM for the binary, esbuild for the web
+# Builds Folia.app without Xcode: SwiftPM for the binary, esbuild for the web
 # bundle, then a hand-assembled bundle signed ad-hoc so Gatekeeper is happy
 # with a locally built app.
 set -euo pipefail
 
 cd "$(dirname "$0")"
 
-APP_NAME="MDApp"
-BUNDLE_ID="com.hmuyal.mdapp"
+APP_NAME="Folia"
+BUNDLE_ID="com.hmuyal.folia"
 VERSION="1.0.0"
 BUILD_NUMBER="$(date +%Y%m%d%H%M)"
 
@@ -52,15 +52,15 @@ node Tools/check-design-tokens.mjs || die "design tokens are out of sync"
 
 # -------------------------------------------------------------- binary -----
 say "Compiling Swift ($CONFIG)"
-swift build -c "$CONFIG" "${ARCHS[@]}" --product MDApp || die "swift build failed"
+swift build -c "$CONFIG" "${ARCHS[@]}" --product Folia || die "swift build failed"
 
-BIN_PATH="$(swift build -c "$CONFIG" "${ARCHS[@]}" --product MDApp --show-bin-path)"
-[[ -x "$BIN_PATH/MDApp" ]] || die "binary not found at $BIN_PATH/MDApp"
+BIN_PATH="$(swift build -c "$CONFIG" "${ARCHS[@]}" --product Folia --show-bin-path)"
+[[ -x "$BIN_PATH/Folia" ]] || die "binary not found at $BIN_PATH/Folia"
 
 # ---------------------------------------------------------------- icon -----
 say "Rendering app icon"
-ICON_SRC="Sources/MDApp/Resources/AppIcon.png"
-ICONSET="build/MDApp.iconset"
+ICON_SRC="Sources/Folia/Resources/AppIcon.png"
+ICONSET="build/Folia.iconset"
 rm -rf "$ICONSET"; mkdir -p "$ICONSET"
 if [[ -f "$ICON_SRC" ]]; then
   # (pixel size, iconutil filename) pairs for a complete .iconset.
@@ -71,7 +71,7 @@ if [[ -f "$ICON_SRC" ]]; then
     px="${variant%%:*}"; name="${variant##*:}"
     sips -z "$px" "$px" "$ICON_SRC" --out "$ICONSET/$name.png" >/dev/null 2>&1
   done
-  iconutil -c icns "$ICONSET" -o "build/MDApp.icns" 2>/dev/null || true
+  iconutil -c icns "$ICONSET" -o "build/Folia.icns" 2>/dev/null || true
 fi
 
 # -------------------------------------------------------------- bundle -----
@@ -80,10 +80,10 @@ APP="$APP_NAME.app"
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 
-cp "$BIN_PATH/MDApp" "$APP/Contents/MacOS/$APP_NAME"
+cp "$BIN_PATH/Folia" "$APP/Contents/MacOS/$APP_NAME"
 
 sed -e "s/__VERSION__/$VERSION/" -e "s/__BUILD__/$BUILD_NUMBER/" \
-    Sources/MDApp/Resources/Info.plist > "$APP/Contents/Info.plist"
+    Sources/Folia/Resources/Info.plist > "$APP/Contents/Info.plist"
 plutil -lint "$APP/Contents/Info.plist" >/dev/null || die "Info.plist is invalid"
 
 printf 'APPL????' > "$APP/Contents/PkgInfo"
@@ -98,7 +98,7 @@ mkdir -p "$APP/Contents/Resources/Fonts"
 find Resources/Fonts -type f \( -name '*.otf' -o -name '*.ttf' \) \
   -exec cp {} "$APP/Contents/Resources/Fonts/" \; 2>/dev/null || true
 
-[[ -f build/MDApp.icns ]] && cp build/MDApp.icns "$APP/Contents/Resources/MDApp.icns"
+[[ -f build/Folia.icns ]] && cp build/Folia.icns "$APP/Contents/Resources/Folia.icns"
 
 # ---------------------------------------------------------------- sign -----
 say "Signing (ad-hoc)"

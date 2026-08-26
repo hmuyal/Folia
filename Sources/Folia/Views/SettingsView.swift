@@ -42,7 +42,7 @@ private struct GeneralSettings: View {
                 HStack {
                     Text("Default Markdown application")
                     Spacer()
-                    Button("Make MDApp the Default") { makeDefaultHandler() }
+                    Button("Make Folia the Default") { makeDefaultHandler() }
                 }
                 Text("Applies to .md, .markdown, .mdown, .mkd, .rmd, .qmd, .mdx and .mdc files.")
                     .font(.caption)
@@ -54,10 +54,10 @@ private struct GeneralSettings: View {
 
     private func makeDefaultHandler() {
         guard let bundleID = Bundle.main.bundleIdentifier else { return }
-        for uti in ["net.daringfireball.markdown", "com.hmuyal.mdapp.markdown-variant"] {
+        for uti in ["net.daringfireball.markdown", "com.hmuyal.folia.markdown-variant"] {
             LSSetDefaultRoleHandlerForContentType(uti as CFString, .all, bundleID as CFString)
         }
-        state.statusMessage = "MDApp is now the default Markdown app"
+        state.statusMessage = "Folia is now the default Markdown app"
         state.clearStatusSoon()
     }
 }

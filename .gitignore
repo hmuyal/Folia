@@ -2,9 +2,9 @@
 .DS_Store
 .build/
 .claude/
-MDApp.app/
-Sources/MDApp/Resources/Fonts/
-Sources/MDApp/Resources/web/
+Folia.app/
+Sources/Folia/Resources/Fonts/
+Sources/Folia/Resources/web/
 build/
 dist/
 web/assets/

@@ -21,7 +21,7 @@ const CORE_FONTS = [
 
 /*
  * Assets are read through the host, not fetch(): WKWebView does not resolve
- * fetch() against a custom URL scheme, so a fetch of mdapp://… never settles.
+ * fetch() against a custom URL scheme, so a fetch of folia://… never settles.
  * Swift already owns the filesystem, so it does the reading and base64-ing.
  * The fetch path stays for the browser dev harness.
  */
@@ -92,12 +92,12 @@ async function inlineFonts(css, { keep }) {
     }
   }
 
-  const resolved = await readAssetsAsDataURIs([...wanted].map((p) => `mdapp://asset/${p}`));
+  const resolved = await readAssetsAsDataURIs([...wanted].map((p) => `folia://asset/${p}`));
 
   return css.replace(faceRule, (rule) => {
     const paths = [...rule.matchAll(urlRef)].map(([, path]) => path);
     const target = paths.find((p) => wanted.has(p));
-    const dataURI = target && resolved[`mdapp://asset/${target}`];
+    const dataURI = target && resolved[`folia://asset/${target}`];
     if (!dataURI) return '';                       // face not embedded: drop the rule
     return rule.replace(/src\s*:[^;}]*/, `src:url("${dataURI}") format("woff2")`);
   });
@@ -149,7 +149,7 @@ export async function buildStandaloneHTML(source, {
   await inlineImages(clone);
 
   const hasMath = Boolean(clone.querySelector('.katex'));
-  let css = await readAssetText('mdapp://asset/app.css');
+  let css = await readAssetText('folia://asset/app.css');
   css = await inlineFonts(css, {
     keep: (file) => CORE_FONTS.includes(file) || (hasMath && file.startsWith('KaTeX_')),
   });
@@ -175,7 +175,7 @@ html, body { background: #fff; }
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="generator" content="MDApp">
+<meta name="generator" content="Folia">
 <title>${escapeHTML(title)}</title>
 <style>
 ${css}
