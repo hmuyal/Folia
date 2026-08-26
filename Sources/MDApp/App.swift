@@ -47,14 +47,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     /// Finder double-click, Open With, and files dropped on the Dock icon.
-    func application(_ sender: NSApplication, openFiles filenames: [String]) {
-        let urls = filenames.map { URL(fileURLWithPath: $0) }
+    func application(_ application: NSApplication, open urls: [URL]) {
         if let state {
             open(urls, in: state)
         } else {
             pendingOpens.append(contentsOf: urls)
         }
-        sender.reply(toOpenOrPrint: .success)
     }
 
     /// Returns true when files were waiting to be opened.
@@ -68,13 +66,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func open(_ urls: [URL], in state: AppState) {
-        Task { @MainActor in
-            for url in urls {
-                var isDir: ObjCBool = false
-                FileManager.default.fileExists(atPath: url.path, isDirectory: &isDir)
-                if isDir.boolValue { state.openFolder(url) } else { state.store.open(url) }
-            }
-        }
+        Task { @MainActor in state.open(urls: urls) }
     }
 
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {

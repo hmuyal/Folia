@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct RootView: View {
     @ObservedObject var state: AppState
@@ -15,23 +16,7 @@ struct RootView: View {
                 Rectangle().fill(palette.hairline).frame(width: 1)
             }
 
-            VStack(spacing: 0) {
-                if state.store.documents.count > 1 || state.prefs.showSidebar {
-                    TabBarView(store: state.store, palette: palette)
-                }
-
-                ZStack {
-                    palette.canvas
-                    ContentWebView(bridge: state.bridge)
-                    if state.store.documents.isEmpty { EmptyStateView(state: state, palette: palette) }
-                }
-
-                if let doc = state.store.active, doc.externalChange != nil {
-                    ExternalChangeBar(doc: doc, palette: palette)
-                }
-
-                StatusBar(state: state, palette: palette)
-            }
+            DocumentColumnView(store: state.store, state: state, palette: palette)
         }
         .background(palette.canvas)
         .preferredColorScheme(state.prefs.appearance == .system ? nil
@@ -49,6 +34,38 @@ struct RootView: View {
             Button("OK", role: .cancel) { state.store.lastError = nil }
         } message: {
             Text(state.store.lastError ?? "")
+        }
+    }
+}
+
+/// The tab bar, document area and status bar. Holds its own reference to
+/// `DocumentStore` — RootView only observes `AppState`, which doesn't forward
+/// the store's own @Published changes, so a view that needs to react to
+/// documents opening or closing has to observe the store directly (as
+/// TabBarView already does) rather than read `state.store` from a view that
+/// isn't itself subscribed to it.
+private struct DocumentColumnView: View {
+    @ObservedObject var store: DocumentStore
+    let state: AppState
+    let palette: Palette
+
+    var body: some View {
+        VStack(spacing: 0) {
+            if store.documents.count > 1 || state.prefs.showSidebar {
+                TabBarView(store: store, palette: palette)
+            }
+
+            ZStack {
+                palette.canvas
+                ContentWebView(bridge: state.bridge, isHidden: store.documents.isEmpty)
+                if store.documents.isEmpty { EmptyStateView(state: state, palette: palette) }
+            }
+
+            if let doc = store.active, doc.externalChange != nil {
+                ExternalChangeBar(doc: doc, palette: palette)
+            }
+
+            StatusBar(state: state, palette: palette)
         }
     }
 }
@@ -103,6 +120,19 @@ private struct EmptyStateView: View {
         .padding(Tok.S.xxl)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(palette.canvas)
+        // No document is open yet, so this area is free to accept a dropped
+        // file. Once a document is open, drops land in the editor instead
+        // (for embedding images), so this handler doesn't compete with that.
+        .onDrop(of: [.fileURL], isTargeted: nil) { providers in
+            guard !providers.isEmpty else { return false }
+            for provider in providers {
+                _ = provider.loadDataRepresentation(forTypeIdentifier: UTType.fileURL.identifier) { data, _ in
+                    guard let data, let url = URL(dataRepresentation: data, relativeTo: nil) else { return }
+                    DispatchQueue.main.async { state.open(urls: [url]) }
+                }
+            }
+            return true
+        }
     }
 }
 
