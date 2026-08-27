@@ -222,3 +222,5 @@ License. Third-party JavaScript keeps its own licences; see `web/package.json`.
 If you find Folia useful, consider [buying me a coffee](https://buymeacoffee.com/hervem).
 
 [![Buy Me A Coffee](https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png)](https://buymeacoffee.com/hervem)
+
+<a href="https://buymeacoffee.com/hervem"><img src="docs/buymeacoffee-qr.png" alt="QR code linking to buymeacoffee.com/hervem" width="160"></a>
