@@ -216,3 +216,9 @@ MIT — see [`LICENSE`](LICENSE).
 
 The bundled typefaces (EB Garamond, Inter, JetBrains Mono) are SIL Open Font
 License. Third-party JavaScript keeps its own licences; see `web/package.json`.
+
+## Support
+
+If you find Folia useful, consider [buying me a coffee](https://buymeacoffee.com/hervem).
+
+[![Buy Me A Coffee](https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png)](https://buymeacoffee.com/hervem)
