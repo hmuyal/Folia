@@ -73,6 +73,23 @@ final class WebBridge: NSObject, ObservableObject {
         if ProcessInfo.processInfo.environment["FOLIA_INSPECT"] != nil {
             webView.isInspectable = true
         }
+
+        // WKWebView composites out-of-process; the window server can discard
+        // that backing surface while the window is miniaturized (to save
+        // memory) and WebKit does not always repaint it once the window
+        // comes back, leaving the view blank until something else forces a
+        // layout pass. isHidden is the one lever already proven (see
+        // ContentWebView) to reach this webview's remote compositor, so a
+        // quick off/on nudges it back into drawing.
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(windowDidDeminiaturize(_:)),
+            name: NSWindow.didDeminiaturizeNotification, object: nil)
+    }
+
+    @objc private func windowDidDeminiaturize(_ notification: Notification) {
+        guard let window = notification.object as? NSWindow, window == webView.window else { return }
+        webView.isHidden = true
+        DispatchQueue.main.async { [weak self] in self?.webView.isHidden = false }
     }
 
     func loadShell() {
