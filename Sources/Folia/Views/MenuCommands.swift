@@ -4,8 +4,14 @@ import SwiftUI
 /// reachable from the menu, a shortcut, and the toolbar.
 struct MenuCommands: Commands {
     @ObservedObject var state: AppState
+    @ObservedObject var updateChecker: UpdateChecker
 
     var body: some Commands {
+        CommandGroup(after: .appInfo) {
+            Button("Check for Updates…") { updateChecker.checkForUpdates() }
+                .disabled(!updateChecker.canCheckForUpdates)
+        }
+
         CommandGroup(replacing: .newItem) {
             Button("New") { state.store.newDocument() }
                 .keyboardShortcut("n")

@@ -12,7 +12,13 @@ of the generic dark-mode-IDE aesthetic most Markdown apps default to.
 
 ## Get it running
 
-You need Xcode's Command Line Tools and Node — **not** full Xcode.
+The quickest way in is a prebuilt copy: grab the latest `Folia-*-arm64.zip`
+from [Releases](https://github.com/hmuyal/Folia/releases/latest), unzip it,
+and move `Folia.app` to Applications. From then on, Folia's own **Check for
+Updates…** (in the Folia menu) will offer new versions as they ship.
+
+To build from source instead, you need Xcode's Command Line Tools and Node —
+**not** full Xcode:
 
 ```bash
 git clone https://github.com/hmuyal/Folia.git
@@ -27,8 +33,9 @@ in the folder. Drag it into `/Applications` to keep it, and it'll register
 itself as a handler for Markdown files, so double-click, Open With and
 dragging a `.md` file onto its Dock icon all just work.
 
-Since it's built locally and not notarised, the first launch will get a
-Gatekeeper warning — right-click the app and choose **Open** once to clear it.
+Either way, since it's ad-hoc signed and not notarised, the first launch will
+get a Gatekeeper warning — right-click the app and choose **Open** once to
+clear it.
 
 ![Folia's welcome screen](docs/screenshots/welcome.png)
 
@@ -57,6 +64,10 @@ copy-as-rich-text that pastes correctly into Mail, Pages and Slack.
 **Stays offline** — KaTeX, Mermaid, highlight.js and every font ship inside the
 app. A document renders completely with the network unplugged, and remote
 content is blocked unless you turn it on.
+
+**Updates itself** — Folia menu › Check for Updates…, powered by
+[Sparkle](https://sparkle-project.org). Updates are signed and verified before
+installing.
 
 ![Jumping to any heading from the outline](docs/screenshots/outline.png)
 
@@ -108,6 +119,29 @@ cd web && node build.mjs && python3 -m http.server 8731 --directory dist/web
 ```
 
 then open `http://localhost:8731/harness.html` (add `?theme=dark`).
+
+### Releasing
+
+Updates ship through [Sparkle](https://sparkle-project.org): the app checks
+`appcast.xml` (in this repo, served over raw.githubusercontent.com) and
+verifies each downloaded update against an EdDSA key before installing —
+`generate_keys` created that keypair once, and only the private half
+(in the maintainer's Keychain, never committed) can produce a feed Sparkle
+will accept.
+
+1. Bump `VERSION` in `build.sh`.
+2. `./build.sh` (a clean build — `rm -rf .build Folia.app build` first).
+3. `ditto -c -k --sequesterRsrc --keepParent Folia.app Folia-$VERSION-arm64.zip`
+4. Get the [Sparkle tools](https://github.com/sparkle-project/Sparkle/releases)
+   (`Sparkle-*.tar.xz`, not the SPM zip) and run, from a folder holding just
+   that zip:
+   ```bash
+   generate_appcast --download-url-prefix "https://github.com/hmuyal/Folia/releases/download/v$VERSION/" .
+   ```
+   This signs the zip with the Keychain-held private key and writes
+   `appcast.xml`. Copy it over the one at the repo root, add release notes to
+   its `<description>`, commit and push.
+5. `gh release create vVERSION Folia-$VERSION-arm64.zip --title "Folia $VERSION" --notes "..."`
 
 ## Architecture
 

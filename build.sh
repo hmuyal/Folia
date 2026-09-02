@@ -8,7 +8,7 @@ cd "$(dirname "$0")"
 
 APP_NAME="Folia"
 BUNDLE_ID="com.hmuyal.folia"
-VERSION="1.0.0"
+VERSION="1.1.0"
 BUILD_NUMBER="$(date +%Y%m%d%H%M)"
 
 CONFIG="release"
@@ -81,6 +81,14 @@ rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 
 cp "$BIN_PATH/Folia" "$APP/Contents/MacOS/$APP_NAME"
+
+# SwiftPM links Sparkle with an @loader_path rpath (no Xcode-style Frameworks
+# embedding here), so the framework has to sit right next to the binary.
+[[ -d "$BIN_PATH/Sparkle.framework" ]] || die "Sparkle.framework not found at $BIN_PATH — swift build did not produce it"
+cp -R "$BIN_PATH/Sparkle.framework" "$APP/Contents/MacOS/Sparkle.framework"
+# SwiftPM's extracted copy carries com.apple.provenance (from the downloaded
+# artifact), which codesign refuses to sign over.
+xattr -cr "$APP/Contents/MacOS/Sparkle.framework"
 
 sed -e "s/__VERSION__/$VERSION/" -e "s/__BUILD__/$BUILD_NUMBER/" \
     Sources/Folia/Resources/Info.plist > "$APP/Contents/Info.plist"

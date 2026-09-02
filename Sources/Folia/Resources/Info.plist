@@ -19,6 +19,15 @@
   <key>NSSupportsSuddenTermination</key>  <false/>
   <key>NSHumanReadableCopyright</key>     <string>Markdown reader and editor</string>
 
+  <!-- Sparkle: in-app "Check for Updates…". The feed is the appcast committed
+       to the repo and served over raw.githubusercontent.com; the EdDSA key
+       below is public — only its matching private half (kept in the
+       maintainer's Keychain, never committed) can produce a feed Sparkle
+       will accept. -->
+  <key>SUFeedURL</key>                    <string>https://raw.githubusercontent.com/hmuyal/Folia/main/appcast.xml</string>
+  <key>SUPublicEDKey</key>                <string>3WZi4Y4I+Fkh43tToaqycut+fIvRm5lZhdvYNsTzURc=</string>
+  <key>SUEnableInstallerLauncherService</key><false/>
+
   <!-- Files Folia can open. LSHandlerRank Alternate keeps it a candidate in
        Open With without seizing .md from the user's current default. -->
   <key>CFBundleDocumentTypes</key>

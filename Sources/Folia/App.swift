@@ -5,6 +5,7 @@ import AppKit
 struct FoliaMain: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var delegate
     @StateObject private var state = AppState()
+    @StateObject private var updateChecker = UpdateChecker()
 
     var body: some Scene {
         WindowGroup {
@@ -22,7 +23,7 @@ struct FoliaMain: App {
         }
         .windowToolbarStyle(.unifiedCompact)
         .defaultSize(width: 1180, height: 780)
-        .commands { MenuCommands(state: state) }
+        .commands { MenuCommands(state: state, updateChecker: updateChecker) }
 
         Settings {
             SettingsView(state: state)
