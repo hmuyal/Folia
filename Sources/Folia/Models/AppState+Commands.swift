@@ -78,4 +78,24 @@ extension AppState {
             statusMessage = nil
         }
     }
+
+    // MARK: Zoom
+    // Shared by the View menu and the status bar's zoom control, so the two
+    // can never drift on range or reset point.
+
+    static let minPreviewFontSize: Double = 11
+    static let maxPreviewFontSize: Double = 28
+    static let defaultPreviewFontSize: Double = 16
+
+    func zoomIn() {
+        prefs.previewFontSize = min(Self.maxPreviewFontSize, prefs.previewFontSize + 1)
+    }
+
+    func zoomOut() {
+        prefs.previewFontSize = max(Self.minPreviewFontSize, prefs.previewFontSize - 1)
+    }
+
+    func resetZoom() {
+        prefs.previewFontSize = Self.defaultPreviewFontSize
+    }
 }

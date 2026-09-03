@@ -148,11 +148,11 @@ struct MenuCommands: Commands {
                 ForEach(AppearanceMode.allCases) { Text($0.label).tag($0) }
             }
 
-            Button("Actual Size")  { state.prefs.previewFontSize = 16 }
+            Button("Actual Size")  { state.resetZoom() }
                 .keyboardShortcut("0", modifiers: [.command, .option])
-            Button("Zoom In")  { state.prefs.previewFontSize = min(28, state.prefs.previewFontSize + 1) }
+            Button("Zoom In")  { state.zoomIn() }
                 .keyboardShortcut("+", modifiers: [.command, .option])
-            Button("Zoom Out") { state.prefs.previewFontSize = max(11, state.prefs.previewFontSize - 1) }
+            Button("Zoom Out") { state.zoomOut() }
                 .keyboardShortcut("-", modifiers: [.command, .option])
         }
 

@@ -30,6 +30,8 @@ struct StatusBar: View {
                 Text("\(state.readingMinutes) min read")
             }
 
+            ZoomControl(state: state)
+
             Picker("", selection: Binding(
                 get: { state.prefs.viewMode },
                 set: { state.prefs.viewMode = $0 })) {
@@ -49,5 +51,37 @@ struct StatusBar: View {
         .overlay(alignment: .top) {
             Rectangle().fill(palette.hairline).frame(height: 1)
         }
+    }
+}
+
+/// Preview zoom, without a trip to the View menu. Mirrors Actual Size / Zoom
+/// In / Zoom Out exactly — same range, same reset point.
+private struct ZoomControl: View {
+    @ObservedObject var state: AppState
+
+    private var percent: Int {
+        Int(round(state.prefs.previewFontSize / AppState.defaultPreviewFontSize * 100))
+    }
+
+    var body: some View {
+        HStack(spacing: 2) {
+            Button(action: state.zoomOut) {
+                Image(systemName: "minus")
+            }
+            .disabled(state.prefs.previewFontSize <= AppState.minPreviewFontSize)
+            .help("Zoom Out (⌥⌘-)")
+
+            Button(action: state.resetZoom) {
+                Text("\(percent)%").frame(minWidth: 34)
+            }
+            .help("Actual Size (⌥⌘0)")
+
+            Button(action: state.zoomIn) {
+                Image(systemName: "plus")
+            }
+            .disabled(state.prefs.previewFontSize >= AppState.maxPreviewFontSize)
+            .help("Zoom In (⌥⌘+)")
+        }
+        .buttonStyle(.plain)
     }
 }
