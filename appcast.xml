@@ -3,19 +3,18 @@
     <channel>
         <title>Folia</title>
         <item>
-            <title>1.1.0</title>
-            <pubDate>Wed, 02 Sep 2026 16:44:27 +0200</pubDate>
-            <sparkle:version>202609021639</sparkle:version>
-            <sparkle:shortVersionString>1.1.0</sparkle:shortVersionString>
+            <title>1.2.0</title>
+            <pubDate>Thu, 03 Sep 2026 15:23:58 +0200</pubDate>
+            <sparkle:version>202609031522</sparkle:version>
+            <sparkle:shortVersionString>1.2.0</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
             <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
             <description><![CDATA[
                 <ul>
-                    <li>Fixed the editor and preview going blank after minimizing the window and restoring it</li>
-                    <li>Added in-app "Check for Updates…"</li>
+                    <li>Added a zoom control to the status bar — no more trip to the View menu</li>
                 </ul>
             ]]></description>
-            <enclosure url="https://github.com/hmuyal/Folia/releases/download/v1.1.0/Folia-1.1.0-arm64.zip" length="6995753" type="application/octet-stream" sparkle:edSignature="3rfmh/5k4aQyk3XXSxwmZiAI2j+PwZA2alnm2xpr+OZtgdA4JvZT2ySi8wnjuevr/BqIRIzYQU0HWasjLLCBCw=="/>
+            <enclosure url="https://github.com/hmuyal/Folia/releases/download/v1.2.0/Folia-1.2.0-arm64.zip" length="6999208" type="application/octet-stream" sparkle:edSignature="OBJX0ItoTwFg9ps+epR6CalrXYwNXr9YYKOxrzb9mNW8fWiTfGLAbsV+vmzxfiaecRYsjY0I5YaW8y3D7OQ1Bg=="/>
         </item>
     </channel>
 </rss>
