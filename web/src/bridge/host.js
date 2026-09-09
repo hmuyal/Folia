@@ -17,6 +17,7 @@ export const host = {
   textChanged:  (id, text, cursorLine)  => post({ type: 'textChanged', id, text, cursorLine }),
   outline:      (items)                 => post({ type: 'outline', items }),
   cursor:       (line)                  => post({ type: 'cursor', line }),
+  scroll:       (id, line)              => post({ type: 'scroll', id, line }),
   openExternal: (href)                  => post({ type: 'openExternal', href }),
   openRelative: (href)                  => post({ type: 'openRelative', href }),
   toggleTask:   (index, checked)        => post({ type: 'toggleTask', index, checked }),

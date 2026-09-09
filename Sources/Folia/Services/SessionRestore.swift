@@ -10,6 +10,8 @@ enum SessionRestore {
             var path: String
             var cursorLine: Int
             var scrollLine: Int
+            var viewMode: ViewMode?
+            var splitRatio: Double?
         }
         var open: [Entry] = []
         var activePath: String?
@@ -23,7 +25,9 @@ enum SessionRestore {
             guard let path = doc.url?.path else { return nil }
             return Snapshot.Entry(path: path,
                                   cursorLine: doc.cursorLine,
-                                  scrollLine: doc.scrollLine)
+                                  scrollLine: doc.scrollLine,
+                                  viewMode: doc.viewMode,
+                                  splitRatio: doc.splitRatio)
         }
         snapshot.activePath = store.active?.url?.path
         snapshot.workspacePath = workspace?.root.path

@@ -16,6 +16,17 @@ let currentDocumentID = '';
 let renderTimer = null;
 let statsTimer = null;
 let lastRenderedText = null;
+let scrollReportTimer = null;
+
+/* Remembers where each tab was scrolled to, so switching back doesn't dump
+   the reader at the top. Debounced and tagged with the document id it came
+   from, so a report that lands after a tab switch still lands on the right
+   document instead of clobbering whatever is now active. */
+function reportScrollSoon(line) {
+  const id = currentDocumentID;
+  clearTimeout(scrollReportTimer);
+  scrollReportTimer = setTimeout(() => host.scroll(id, line), 200);
+}
 
 const preview = new Preview(layout.previewHost, {
   openExternal: (href) => host.openExternal(href),
@@ -30,8 +41,14 @@ const editor = new Editor(layout.editorHost, {
     scheduleStats(text);
   },
   onCursor: (line) => host.cursor(line),
-  onScroll: (topLine) => sync.fromEditor(topLine),
+  onScroll: (topLine) => { sync.fromEditor(topLine); reportScrollSoon(topLine); },
 });
+
+// The preview has its own scroll position to remember (reader mode has no
+// editor pane at all), independent of whether editor <-> preview sync is on.
+layout.previewPane.addEventListener('scroll', () => {
+  reportScrollSoon(preview.lineForOffset(layout.previewPane.scrollTop));
+}, { passive: true });
 
 const sync = new ScrollSync({
   editor,

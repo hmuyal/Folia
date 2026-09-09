@@ -130,14 +130,14 @@ struct MenuCommands: Commands {
         }
 
         CommandGroup(after: .toolbar) {
-            Picker("View Mode", selection: Binding(
-                get: { state.prefs.viewMode }, set: { state.prefs.viewMode = $0 })) {
+            Picker("View Mode", selection: state.viewModeBinding) {
                 ForEach(ViewMode.allCases) { Text($0.label).tag($0) }
             }
             Button("Toggle Sidebar") { state.prefs.showSidebar.toggle() }
                 .keyboardShortcut("s", modifiers: [.command, .control])
             Button("Toggle Source / Reader") {
-                state.prefs.viewMode = state.prefs.viewMode == .reader ? .split : .reader
+                let current = state.store.active?.viewMode ?? state.prefs.viewMode
+                state.setViewMode(current == .reader ? .split : .reader)
             }
             .keyboardShortcut("\\", modifiers: .command)
 

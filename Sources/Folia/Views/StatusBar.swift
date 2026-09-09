@@ -32,9 +32,7 @@ struct StatusBar: View {
 
             ZoomControl(state: state)
 
-            Picker("", selection: Binding(
-                get: { state.prefs.viewMode },
-                set: { state.prefs.viewMode = $0 })) {
+            Picker("", selection: state.viewModeBinding) {
                 ForEach(ViewMode.allCases) { mode in
                     Image(systemName: mode.symbol).tag(mode)
                 }

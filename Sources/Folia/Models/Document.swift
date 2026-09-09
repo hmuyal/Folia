@@ -24,6 +24,14 @@ final class Document: ObservableObject, Identifiable {
     var cursorLine: Int = 0
     var scrollLine: Int = 0
 
+    /// Per-tab display state. Each tab remembers its own reading mode and,
+    /// when split, its own divider position, rather than sharing one global
+    /// setting across every open document. Seeded from the app-wide default
+    /// so a fresh tab starts where the user last left off, then diverges
+    /// freely as that tab is used.
+    @Published var viewMode: ViewMode = Preferences.shared.viewMode
+    @Published var splitRatio: Double = Preferences.shared.splitRatio
+
     private var watcher: FileWatcher?
 
     struct ExternalChange: Equatable {

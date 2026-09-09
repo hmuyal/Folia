@@ -66,12 +66,6 @@ final class AppState: ObservableObject {
             }
             .store(in: &cancellables)
 
-        prefs.$viewMode
-            .sink { [weak self] mode in
-                Task { @MainActor in self?.bridge.setViewMode(mode.rawValue) }
-            }
-            .store(in: &cancellables)
-
         for publisher in [prefs.$editorFontSize, prefs.$previewFontSize, prefs.$measure] {
             publisher.dropFirst()
                 .sink { [weak self] _ in Task { @MainActor in self?.pushEditorPrefs() } }
@@ -98,7 +92,7 @@ final class AppState: ObservableObject {
         pushOptions()
         pushTheme()
         pushEditorPrefs()
-        bridge.setViewMode(prefs.viewMode.rawValue)
+        bridge.setViewMode((store.active?.viewMode ?? prefs.viewMode).rawValue)
         bridge.setCustomCSS(prefs.customCSS)
         pushActiveDocument(force: true)
     }
@@ -121,6 +115,11 @@ final class AppState: ObservableObject {
             baseDirectory: doc.baseDirectory,
             cursorLine: doc.cursorLine,
             scrollLine: doc.scrollLine)
+        // Each tab has its own reading mode and divider position, so a tab
+        // switch has to re-push both rather than leaving the previous tab's
+        // values on screen.
+        bridge.setViewMode(doc.viewMode.rawValue)
+        bridge.setEditorPrefs(editorPrefsPayload(splitRatio: doc.splitRatio))
         suppressPush = false
     }
 
@@ -128,7 +127,11 @@ final class AppState: ObservableObject {
     func pushTheme()   { bridge.setTheme(dark: isDark) }
 
     func pushEditorPrefs() {
-        bridge.setEditorPrefs([
+        bridge.setEditorPrefs(editorPrefsPayload(splitRatio: store.active?.splitRatio ?? prefs.splitRatio))
+    }
+
+    private func editorPrefsPayload(splitRatio: Double) -> [String: Any] {
+        [
             "fontSize":        prefs.editorFontSize,
             "previewFontSize": prefs.previewFontSize,
             "measure":         prefs.measure,
@@ -139,8 +142,26 @@ final class AppState: ObservableObject {
             "focus":           prefs.focusMode,
             "vim":             prefs.vimMode,
             "scrollSync":      prefs.scrollSync,
-            "splitRatio":      prefs.splitRatio,
-        ])
+            "splitRatio":      splitRatio,
+        ]
+    }
+
+    // MARK: View mode
+
+    /// The active tab's reading mode, falling back to the app-wide default
+    /// when no tab is open. Setting it updates the tab (not just the
+    /// default), and remembers the choice as the seed for the next new tab.
+    var viewModeBinding: Binding<ViewMode> {
+        Binding(
+            get: { self.store.active?.viewMode ?? self.prefs.viewMode },
+            set: { self.setViewMode($0) })
+    }
+
+    func setViewMode(_ mode: ViewMode) {
+        prefs.viewMode = mode
+        guard let doc = store.active else { return }
+        doc.viewMode = mode
+        bridge.setViewMode(mode.rawValue)
     }
 
     // MARK: Events from the page
@@ -163,6 +184,12 @@ final class AppState: ObservableObject {
 
         case .cursorMoved(let line):
             store.active?.cursorLine = line
+
+        case .scrollMoved(let id, let line):
+            // Tagged with the document it came from (not just "the active
+            // one") so a report that lands after a tab switch still updates
+            // the tab that was actually scrolled.
+            store.documents.first(where: { $0.id.uuidString == id })?.scrollLine = line
 
         case .openExternal(let url):
             openExternal(url)
@@ -277,7 +304,10 @@ final class AppState: ObservableObject {
         case "saveImage":
             return saveImage(payload)
         case "setSplitRatio":
-            if let ratio = payload["ratio"] as? Double { prefs.splitRatio = ratio }
+            if let ratio = payload["ratio"] as? Double {
+                prefs.splitRatio = ratio
+                store.active?.splitRatio = ratio
+            }
             return ["ok": true]
 
         case "readAsset":
@@ -436,6 +466,8 @@ final class AppState: ObservableObject {
             if let doc = store.open(url) {
                 doc.cursorLine = entry.cursorLine
                 doc.scrollLine = entry.scrollLine
+                if let mode = entry.viewMode { doc.viewMode = mode }
+                if let ratio = entry.splitRatio { doc.splitRatio = ratio }
             }
         }
 

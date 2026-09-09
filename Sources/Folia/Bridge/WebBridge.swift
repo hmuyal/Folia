@@ -8,6 +8,7 @@ enum WebEvent {
     case textChanged(id: String, text: String, cursorLine: Int)
     case outline([OutlineItem])
     case cursorMoved(line: Int)
+    case scrollMoved(id: String, line: Int)
     case openExternal(URL)
     case openRelative(String)
     case toggleTask(index: Int, checked: Bool)
@@ -205,6 +206,12 @@ final class WebBridge: NSObject, ObservableObject {
 
         case "cursor":
             onEvent?(.cursorMoved(line: dict["line"] as? Int ?? 0))
+
+        case "scroll":
+            // The line is fractional on the JS side (smooth scroll sync), so
+            // it can arrive as either an Int or a Double literal.
+            let line = (dict["line"] as? Double) ?? Double(dict["line"] as? Int ?? 0)
+            onEvent?(.scrollMoved(id: dict["id"] as? String ?? "", line: Int(line.rounded())))
 
         case "openExternal":
             if let href = dict["href"] as? String, let url = URL(string: href) {
