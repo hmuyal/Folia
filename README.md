@@ -57,6 +57,11 @@ scroll-synced live preview, formatting shortcuts, smart list continuation,
 find & replace, paste-HTML-as-Markdown, and drag-or-paste images that get saved
 beside the document.
 
+**Remembers each tab** — reading mode (source / preview / split), the split
+divider position, and your scroll position are all kept per tab, so switching
+between open documents never dumps you back at the top or resets how you were
+viewing one.
+
 **Exports** — self-contained HTML (fonts and images inlined, opens with no
 network), paginated PDF with element-aware page breaks, TextBundle, Print, and
 copy-as-rich-text that pastes correctly into Mail, Pages and Slack.

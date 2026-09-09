@@ -3,18 +3,19 @@
     <channel>
         <title>Folia</title>
         <item>
-            <title>1.2.0</title>
-            <pubDate>Thu, 03 Sep 2026 15:23:58 +0200</pubDate>
-            <sparkle:version>202609031522</sparkle:version>
-            <sparkle:shortVersionString>1.2.0</sparkle:shortVersionString>
+            <title>1.3.0</title>
+            <pubDate>Wed, 09 Sep 2026 17:31:39 +0200</pubDate>
+            <sparkle:version>202609091730</sparkle:version>
+            <sparkle:shortVersionString>1.3.0</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
             <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
             <description><![CDATA[
                 <ul>
-                    <li>Added a zoom control to the status bar — no more trip to the View menu</li>
+                    <li>Each tab now remembers its own reading mode (source / preview / split) and split divider position</li>
+                    <li>Each tab now remembers its scroll position — switching tabs no longer drops you back at the top</li>
                 </ul>
             ]]></description>
-            <enclosure url="https://github.com/hmuyal/Folia/releases/download/v1.2.0/Folia-1.2.0-arm64.zip" length="6999208" type="application/octet-stream" sparkle:edSignature="OBJX0ItoTwFg9ps+epR6CalrXYwNXr9YYKOxrzb9mNW8fWiTfGLAbsV+vmzxfiaecRYsjY0I5YaW8y3D7OQ1Bg=="/>
+            <enclosure url="https://github.com/hmuyal/Folia/releases/download/v1.3.0/Folia-1.3.0-arm64.zip" length="7001436" type="application/octet-stream" sparkle:edSignature="sNIJcDWU+Q4q2joMUM6R+ZeEOY4dg5YaeFI/VINMprsF1CwnZ8ysbQ6px/O8kK4wNGL8MpJiwmGNBaIJUOeFDg=="/>
         </item>
     </channel>
 </rss>
