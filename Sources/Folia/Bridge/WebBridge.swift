@@ -116,11 +116,10 @@ final class WebBridge: NSObject, ObservableObject {
     }
 
     func setDocument(id: String, text: String, path: String?, baseDirectory: URL?,
-                     cursorLine: Int, scrollLine: Int) {
+                     cursorLine: Int) {
         schemeHandler.documentBaseDirectory = baseDirectory
         call("setDocument", [
-            "id": id, "text": text, "path": path ?? "",
-            "cursorLine": cursorLine, "scrollLine": scrollLine,
+            "id": id, "text": text, "path": path ?? "", "cursorLine": cursorLine,
         ])
     }
 
@@ -128,6 +127,9 @@ final class WebBridge: NSObject, ObservableObject {
     func setTheme(dark: Bool)                 { call("setTheme", dark ? "dark" : "light") }
     func setViewMode(_ mode: String)          { call("setViewMode", mode) }
     func setEditorPrefs(_ prefs: [String: Any]) { call("setEditorPrefs", prefs) }
+    /// Called last in a tab switch, once setViewMode/setEditorPrefs have
+    /// already landed — see the JS-side comment on Folia.restoreScroll.
+    func restoreScroll(_ line: Int)           { call("restoreScroll", line) }
     func setCustomCSS(_ css: String)          { call("setCustomCSS", css) }
     func command(_ name: String)              { call("command", name) }
     func scrollToLine(_ line: Int)            { call("scrollToLine", line) }

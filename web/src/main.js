@@ -17,15 +17,32 @@ let renderTimer = null;
 let statsTimer = null;
 let lastRenderedText = null;
 let scrollReportTimer = null;
+let suppressScrollReports = false;
+let scrollSuppressTimer = null;
 
 /* Remembers where each tab was scrolled to, so switching back doesn't dump
    the reader at the top. Debounced and tagged with the document id it came
    from, so a report that lands after a tab switch still lands on the right
    document instead of clobbering whatever is now active. */
 function reportScrollSoon(line) {
+  if (suppressScrollReports) return;
   const id = currentDocumentID;
   clearTimeout(scrollReportTimer);
   scrollReportTimer = setTimeout(() => host.scroll(id, line), 200);
+}
+
+/* setDocument/setViewMode/setEditorPrefs reposition scroll themselves (new
+   document, panes resized, mode switched) — none of that is the user
+   scrolling, but each can still fire a native 'scroll' event: swapping in
+   shorter content clamps scrollTop, and resizing a pane can too. Left
+   unguarded, that stray event gets reported right back as if it were real,
+   overwriting the position that was just restored with wherever the reflow
+   happened to leave it — which is how a tab's remembered scroll position
+   quietly resets to (near) the top on the very next switch. */
+function suppressScrollBriefly() {
+  suppressScrollReports = true;
+  clearTimeout(scrollSuppressTimer);
+  scrollSuppressTimer = setTimeout(() => { suppressScrollReports = false; }, 400);
 }
 
 const preview = new Preview(layout.previewHost, {
@@ -112,15 +129,33 @@ function sendStats(text) {
 /* --- the API Swift calls -------------------------------------------------- */
 
 const Folia = {
-  setDocument({ id, text, path, cursorLine = 0, scrollLine = 0 }) {
+  setDocument({ id, text, path, cursorLine = 0 }) {
+    suppressScrollBriefly();
     currentDocumentID = id;
     lastRenderedText = null;
     document.title = path ? path.split('/').pop() : 'Untitled';
-    editor.setText(text ?? '', { cursorLine, scrollLine });
+    // Scroll position is restored separately, by restoreScroll() — after the
+    // host's follow-up setViewMode/setEditorPrefs calls, not before. Doing it
+    // here would race a view-mode switch or split-ratio change that hasn't
+    // landed yet: the pane it just scrolled can still get wider or narrower,
+    // reflow to a shorter document, and have the browser clamp scrollTop back
+    // toward zero — silently undoing the restore a moment after it happened.
+    editor.setText(text ?? '', { cursorLine });
     renderNow();
     sendStats(text ?? '');
+  },
+
+  /** Called last in a document/tab switch, once view mode and editor prefs
+   *  (including split ratio) have already been applied — see setDocument. */
+  restoreScroll(scrollLine) {
     if (scrollLine > 0) {
-      requestAnimationFrame(() => sync.realign(scrollLine));
+      // One rAF to clear the frame setViewMode/setEditorPrefs land in, a
+      // second so their reflow has actually been measured before we read
+      // pixel offsets or hand CodeMirror a line to scroll to.
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        editor.scrollToLine(scrollLine);
+        sync.realign(scrollLine);
+      }));
     } else {
       layout.previewPane.scrollTop = 0;
     }
@@ -154,6 +189,7 @@ const Folia = {
   },
 
   setViewMode(mode) {
+    suppressScrollBriefly();
     layout.setMode(mode);
     // The preview was display:none in source mode, so its line index is stale.
     if (mode !== 'source') {
@@ -163,6 +199,7 @@ const Folia = {
   },
 
   setEditorPrefs(prefs) {
+    suppressScrollBriefly();
     editor.setPrefs({
       fontSize:    prefs.fontSize,
       tabWidth:    prefs.tabWidth,

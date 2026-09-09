@@ -113,13 +113,18 @@ final class AppState: ObservableObject {
             text: doc.text,
             path: doc.url?.path,
             baseDirectory: doc.baseDirectory,
-            cursorLine: doc.cursorLine,
-            scrollLine: doc.scrollLine)
+            cursorLine: doc.cursorLine)
         // Each tab has its own reading mode and divider position, so a tab
         // switch has to re-push both rather than leaving the previous tab's
         // values on screen.
         bridge.setViewMode(doc.viewMode.rawValue)
         bridge.setEditorPrefs(editorPrefsPayload(splitRatio: doc.splitRatio))
+        // Scroll position goes last and only after the above — restoring it
+        // before a view-mode or split-ratio change lands races that change:
+        // the pane can still get wider/narrower, reflow to a shorter
+        // document, and have the browser clamp the scroll back down right
+        // after it was set.
+        bridge.restoreScroll(doc.scrollLine)
         suppressPush = false
     }
 

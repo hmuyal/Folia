@@ -124,8 +124,11 @@ export class Editor {
 
   get text() { return this.view.state.doc.toString(); }
 
-  /** Replaces the whole document without emitting a change event. */
-  setText(text, { cursorLine = 0, scrollLine = 0 } = {}) {
+  /** Replaces the whole document without emitting a change event. Scroll
+   *  position is restored separately (see Folia.restoreScroll) — setting it
+   *  here would race whatever view-mode/layout calls the host makes right
+   *  after this one. */
+  setText(text, { cursorLine = 0 } = {}) {
     this.suppressChange = true;
     this.view.dispatch({
       changes: { from: 0, to: this.view.state.doc.length, insert: text },
@@ -134,7 +137,6 @@ export class Editor {
     });
     this.suppressChange = false;
     if (cursorLine > 0) this.setCursorLine(cursorLine);
-    if (scrollLine > 0) this.scrollToLine(scrollLine);
   }
 
   /** Applies external text while keeping the cursor where it was. */

@@ -8,7 +8,7 @@ cd "$(dirname "$0")"
 
 APP_NAME="Folia"
 BUNDLE_ID="com.hmuyal.folia"
-VERSION="1.3.0"
+VERSION="1.3.1"
 BUILD_NUMBER="$(date +%Y%m%d%H%M)"
 
 CONFIG="release"

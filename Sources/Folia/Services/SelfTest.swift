@@ -109,7 +109,7 @@ enum SelfTest {
         bridge.setOptions(Preferences.shared.webOptions)
         bridge.setDocument(id: "selftest", text: text, path: url?.path,
                            baseDirectory: url?.deletingLastPathComponent(),
-                           cursorLine: 0, scrollLine: 0)
+                           cursorLine: 0)
 
         // Mermaid resolves asynchronously; give the page time to settle.
         try? await Task.sleep(nanoseconds: 2_500_000_000)
