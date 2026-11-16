@@ -8,7 +8,7 @@ cd "$(dirname "$0")"
 
 APP_NAME="Folia"
 BUNDLE_ID="com.hmuyal.folia"
-VERSION="1.3.1"
+VERSION="1.4.0"
 BUILD_NUMBER="$(date +%Y%m%d%H%M)"
 
 CONFIG="release"
@@ -50,11 +50,41 @@ node Tools/check-options-parity.mjs || die "render options are out of sync"
 say "Checking design tokens are in sync"
 node Tools/check-design-tokens.mjs || die "design tokens are out of sync"
 
-# -------------------------------------------------------------- binary -----
-say "Compiling Swift ($CONFIG)"
-swift build -c "$CONFIG" "${ARCHS[@]}" --product Folia || die "swift build failed"
+# ----------------------------------------------------------------- sdk -----
+# The macOS 27 SDK turns SwiftUI's @State into a macro, and the compiler plugin
+# that expands it ships with Xcode but not with the Command Line Tools. This
+# script exists to build without Xcode, so when only the Command Line Tools are
+# selected, build against the newest installed SDK that predates the macro.
+DEV_DIR="$(xcode-select -p 2>/dev/null || true)"
+if [[ -z "${SDKROOT:-}" && "$DEV_DIR" == */CommandLineTools ]]; then
+  needs_macro_plugin() {
+    # -S: the framework's Modules directory is a symlink into Versions/.
+    grep -rqsS StateMacro "$1/System/Library/Frameworks/SwiftUICore.framework/Modules"
+  }
+  if needs_macro_plugin "$DEV_DIR/SDKs/MacOSX.sdk"; then
+    while IFS= read -r sdk; do
+      [[ -L "$sdk" ]] && continue
+      if ! needs_macro_plugin "$sdk"; then export SDKROOT="$sdk"; break; fi
+    done < <(ls -d "$DEV_DIR"/SDKs/MacOSX[0-9]*.sdk 2>/dev/null | sort -rV)
+    [[ -n "${SDKROOT:-}" ]] \
+      || die "the default SDK needs Xcode's SwiftUI macro plugin, and no older SDK is installed — install Xcode, or set SDKROOT"
+    say "Using $(basename "$SDKROOT") (the default SDK needs Xcode's SwiftUI macro plugin)"
+  fi
+fi
 
-BIN_PATH="$(swift build -c "$CONFIG" "${ARCHS[@]}" --product Folia --show-bin-path)"
+# -------------------------------------------------------------- binary -----
+# SwiftPM's newer default engine links no @loader_path rpath (so the binary
+# cannot find the Sparkle.framework placed beside it) and rewrites whole
+# bundles in .build, which a cloud-synced checkout fights it for. The native
+# engine is deprecated but still builds exactly what has shipped so far; when
+# it is removed, this needs --scratch-path outside the synced folder plus an
+# install_name_tool -add_rpath @loader_path on the copied binary.
+SWIFT_BUILD=(swift build --build-system native -c "$CONFIG" "${ARCHS[@]}" --product Folia)
+
+say "Compiling Swift ($CONFIG)"
+"${SWIFT_BUILD[@]}" || die "swift build failed"
+
+BIN_PATH="$("${SWIFT_BUILD[@]}" --show-bin-path 2>/dev/null)"
 [[ -x "$BIN_PATH/Folia" ]] || die "binary not found at $BIN_PATH/Folia"
 
 # ---------------------------------------------------------------- icon -----

@@ -3,18 +3,19 @@
     <channel>
         <title>Folia</title>
         <item>
-            <title>1.3.1</title>
-            <pubDate>Wed, 09 Sep 2026 18:06:39 +0200</pubDate>
-            <sparkle:version>202609091805</sparkle:version>
-            <sparkle:shortVersionString>1.3.1</sparkle:shortVersionString>
+            <title>1.4.0</title>
+            <pubDate>Mon, 16 Nov 2026 10:17:38 +0100</pubDate>
+            <sparkle:version>202611161016</sparkle:version>
+            <sparkle:shortVersionString>1.4.0</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
             <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
             <description><![CDATA[
                 <ul>
-                    <li>Fixed a bug where a tab's remembered scroll position could silently reset to the top the moment you switched to it — restoring scroll now waits until the view mode and split layout have fully settled first</li>
+                    <li>Find in Reader mode: ⌘F now searches the rendered document, highlights every match and shows a match count</li>
+                    <li>⌘G and ⇧⌘G (or Enter and ⇧Enter) step to the next and previous match</li>
                 </ul>
             ]]></description>
-            <enclosure url="https://github.com/hmuyal/Folia/releases/download/v1.3.1/Folia-1.3.1-arm64.zip" length="7001541" type="application/octet-stream" sparkle:edSignature="T20SOB0/MM65lyx5ch3EpkkhrfMNfQDMViZy2En4piJQwg5lz4khMfTagtXoBExm42Zj7ybnrBGW7KOGJDp/Ag=="/>
+            <enclosure url="https://github.com/hmuyal/Folia/releases/download/v1.4.0/Folia-1.4.0-arm64.zip" length="6991762" type="application/octet-stream" sparkle:edSignature="9ZnFKIc+kTFE/FTjTib4zQrUz7zlXEz1uA0/hRE6K9Hu0AUKcdgqyKH/XGhpTC64yiiKPj83KPtabwPiDDVUAA=="/>
         </item>
     </channel>
 </rss>
