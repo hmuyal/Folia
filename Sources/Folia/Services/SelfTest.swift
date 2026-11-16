@@ -177,6 +177,43 @@ enum SelfTest {
         check("stats reached the host",   statsWords > 0, "\(statsWords) words")
         check("conditional breakout",     num("breakout") >= 0, "\(num("breakout")) wide blocks")
 
+        // --- find in reader mode ---------------------------------------------
+        // Reader mode has no editor pane, so Find there is the preview's own
+        // bar. Search for a word the document is known to contain and make
+        // sure it is both counted and painted — the painting rides on the CSS
+        // Custom Highlight API, which only a real WebKit can vouch for.
+        bridge.setViewMode("reader")
+        bridge.find()
+        try? await Task.sleep(nanoseconds: 300_000_000)
+        let findProbe = """
+        const sample = document.querySelector('.md-doc :is(h1, h2, h3, p, li)')?.textContent || '';
+        const word = (sample.match(/[A-Za-z]{3,}/) || [''])[0];
+        const bar = document.querySelector('.findbar');
+        const input = bar.querySelector('.findbar__input');
+        input.value = word;
+        input.dispatchEvent(new Event('input'));
+        return {
+          open: !bar.hidden,
+          word,
+          count: bar.querySelector('.findbar__count').textContent,
+          painted: globalThis.CSS?.highlights?.get('folia-find')?.size ?? -1,
+        };
+        """
+        let found = await withCheckedContinuation { (c: CheckedContinuation<[String: Any]?, Never>) in
+            bridge.webView.callAsyncJavaScript(findProbe, arguments: [:], in: nil, in: .page) { r in
+                switch r {
+                case .success(let value): c.resume(returning: value as? [String: Any])
+                case .failure(let e): print("     find probe failed: \(e)"); c.resume(returning: nil)
+                }
+            }
+        }
+        let findCount = found?["count"] as? String ?? ""
+        let painted = found?["painted"] as? Int ?? -1
+        check("find in reader mode",
+              (found?["open"] as? Bool ?? false) && findCount.hasPrefix("1 of ") && painted > 0,
+              "“\(found?["word"] as? String ?? "")” → \(findCount.isEmpty ? "no count" : findCount), \(painted) painted")
+        bridge.setViewMode("split")     // closes the bar; the rest runs as before
+
         // --- export ----------------------------------------------------------
         let html = await bridge.exportHTML(standalone: true)
         let exported = html ?? ""

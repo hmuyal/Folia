@@ -132,6 +132,15 @@ final class WebBridge: NSObject, ObservableObject {
     func restoreScroll(_ line: Int)           { call("restoreScroll", line) }
     func setCustomCSS(_ css: String)          { call("setCustomCSS", css) }
     func command(_ name: String)              { call("command", name) }
+
+    /// Find puts the caret in a field inside the page, and that field only
+    /// receives keystrokes while the web view is the window's first responder.
+    /// In reader mode nothing else would have made it so — there is no editor
+    /// to have clicked into.
+    func find(replace: Bool = false) {
+        webView.window?.makeFirstResponder(webView)
+        command(replace ? "replace" : "find")
+    }
     func scrollToLine(_ line: Int)            { call("scrollToLine", line) }
     func replaceText(_ text: String)          { call("replaceText", text) }
 

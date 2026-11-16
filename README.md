@@ -46,7 +46,8 @@ clear it.
 abbreviations, emoji shortcodes, heading anchors, YAML front matter rendered
 as a metadata card, math via KaTeX, Mermaid diagrams, syntax-highlighted code
 in 49 languages, GitHub alerts (`> [!NOTE]`), `:::` containers, and optional
-`[[wiki links]]`.
+`[[wiki links]]`. ⌘F in Reader mode finds in the rendered document, with every
+match highlighted.
 
 **Browses** — open a folder in the sidebar and switch or close it from the
 footer control at its base, or from File › Open Folder / Open Recent Folder /
@@ -88,7 +89,8 @@ installing.
 | ⇧⌘X / ⇧⌘E | Strikethrough · Code block |
 | ⌘1–⌘6 / ⌘0 | Heading level · body text |
 | ⇧⌘L / ⌥⌘L / ⇧⌘' | Bulleted · numbered list · blockquote |
-| ⌘F / ⌥⌘F | Find · find and replace |
+| ⌘F / ⌥⌘F | Find · find and replace (in Reader mode, ⌘F finds in the rendered document) |
+| ⌘G / ⇧⌘G | Next match · previous match |
 | ⇧⌘P / ⇧⌘F | Quick open · find in folder |
 | ⌘\ | Toggle reader mode |
 | ⌃⌘S | Toggle sidebar |
@@ -106,6 +108,11 @@ Options for `build.sh`:
 | `--skip-web` | Reuse the existing web bundle |
 | `--universal` | Build arm64 + x86_64 |
 
+On macOS 27 with only the Command Line Tools, the default SDK needs a SwiftUI
+compiler plugin that ships with Xcode alone. `build.sh` notices and builds
+against the newest older SDK the Command Line Tools still carry (it says which);
+set `SDKROOT` yourself to override.
+
 ### Verifying a build
 
 ```bash
@@ -114,7 +121,7 @@ Options for `build.sh`:
 
 This boots the real WebView headlessly, serves the real bundle over the app's
 private URL scheme, pushes a document through the real bridge, then inspects the
-resulting DOM, the HTML export and the generated PDF. 25 checks; exits non-zero
+resulting DOM, the HTML export and the generated PDF. 26 checks; exits non-zero
 if anything regressed.
 
 To iterate on rendering without rebuilding the app:
@@ -241,6 +248,9 @@ The app renders untrusted files, so:
   but it does not render Quick Look previews.
 - **Not notarised.** Locally built and ad-hoc signed. Gatekeeper will warn if
   you move the app to another machine.
+- **Find highlighting needs macOS 14.2.** Reader-mode find paints matches with
+  the CSS Custom Highlight API. On 14.0 and 14.1 it still counts matches and
+  jumps between them, but does not highlight them.
 - **KaTeX, not MathJax.** Synchronous and much smaller. It covers essentially
   all Markdown maths, though MathJax handles a few more obscure edge cases.
 - **Print… is the one path not covered by the self-test.** It uses the system

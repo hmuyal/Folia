@@ -2,6 +2,7 @@ import { Layout } from './app/layout.js';
 import { ScrollSync } from './app/sync.js';
 import { Editor } from './editor/editor.js';
 import { Preview } from './preview/preview.js';
+import { PreviewFind } from './preview/find.js';
 import { buildStandaloneHTML } from './export/standalone.js';
 import { host } from './bridge/host.js';
 import { nextFrame } from './app/nextFrame.js';
@@ -49,6 +50,11 @@ const preview = new Preview(layout.previewHost, {
   openExternal: (href) => host.openExternal(href),
   openRelative: (href) => host.openRelative(href),
   toggleTask:   (index, checked) => host.toggleTask(index, checked),
+});
+
+const finder = new PreviewFind(root, {
+  content: layout.previewHost,
+  scroller: layout.previewPane,
 });
 
 const editor = new Editor(layout.editorHost, {
@@ -191,6 +197,7 @@ const Folia = {
   setViewMode(mode) {
     suppressScrollBriefly();
     layout.setMode(mode);
+    if (mode !== 'reader') finder.close();
     // The preview was display:none in source mode, so its line index is stale.
     if (mode !== 'source') {
       requestAnimationFrame(() => preview.buildLineIndex());
@@ -234,6 +241,12 @@ const Folia = {
   command(name) {
     // A couple of commands belong to the preview, not the editor.
     if (name === 'scrollTop') { layout.previewPane.scrollTop = 0; return; }
+    // Reader mode has no editor pane for CodeMirror's search panel to open
+    // in, and nothing to replace into — both commands find in the preview.
+    if ((name === 'find' || name === 'replace') && layout.mode === 'reader') {
+      finder.open();
+      return;
+    }
     editor.run(name);
   },
 

@@ -162,9 +162,9 @@ struct MenuCommands: Commands {
             Button("Find in Folder…") { state.showFolderSearch = true }
                 .keyboardShortcut("f", modifiers: [.command, .shift])
             Divider()
-            Button("Find…") { state.bridge.command("find") }
+            Button("Find…") { state.bridge.find() }
                 .keyboardShortcut("f")
-            Button("Find and Replace…") { state.bridge.command("replace") }
+            Button("Find and Replace…") { state.bridge.find(replace: true) }
                 .keyboardShortcut("f", modifiers: [.command, .option])
             Divider()
             Button("Next Tab")     { state.store.selectTab(offset: 1) }

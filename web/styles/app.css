@@ -95,3 +95,67 @@ body.is-dragging .splitter { background: var(--primary); pointer-events: auto; }
 /* --- Preview inner padding ------------------------------------------------ */
 /* The preview pane scrolls; .md-doc supplies its own grid gutters. */
 .pane--preview .md-doc { min-height: 100%; }
+
+/* --- Find in reader mode -------------------------------------------------- */
+/* Floats over the preview's top-right corner, clear of the scrollbar. */
+.findbar {
+  position: fixed;
+  top: var(--s-sm);
+  right: var(--s-lg);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: var(--s-xxs) var(--s-xxs) var(--s-xxs) var(--s-xs);
+  background: var(--ed-panel-bg);
+  color: var(--ed-text);
+  border: 1px solid var(--ed-divider);
+  border-radius: var(--r-md);
+  box-shadow: 0 6px 20px rgba(20, 20, 19, 0.14);
+  font-family: var(--font-body);
+  font-size: 12px;
+}
+.findbar[hidden] { display: none; }
+
+.findbar__input {
+  width: 190px;
+  padding: 4px 8px;
+  font: inherit;
+  color: var(--ed-text);
+  background: var(--ed-bg);
+  border: 1px solid var(--ed-divider);
+  border-radius: var(--r-sm);
+  outline: none;
+  /* The shell is unselectable; without this WebKit will not let you type. */
+  -webkit-user-select: text;
+  user-select: text;
+}
+.findbar__input:focus { border-color: var(--primary); }
+.findbar__input::placeholder { color: var(--ed-quote); }
+
+.findbar__count {
+  min-width: 62px;
+  padding: 0 var(--s-xxs);
+  text-align: center;
+  color: var(--ed-quote);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.findbar--empty .findbar__count { color: var(--error); }
+
+.findbar__btn {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  color: var(--ed-quote);
+  background: transparent;
+  border: 0;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+}
+.findbar__btn:hover { color: var(--ed-text); background: var(--ed-divider); }
+
+::highlight(folia-find)         { background-color: var(--ed-search); }
+::highlight(folia-find-current) { background-color: var(--primary); color: var(--on-primary); }
